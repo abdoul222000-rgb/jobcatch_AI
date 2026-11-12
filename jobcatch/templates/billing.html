@@ -60,11 +60,9 @@
                         Cancel Auto-Renew (Pay $0)
                     </button>
                 </form>
-                <form action="/api/subscription/upgrade-now" method="POST" class="w-full sm:w-auto">
-                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/25 transition">
-                        Activate Pro Now ($39/mo) &rarr;
-                    </button>
-                </form>
+                <a href="/checkout" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/25 transition flex items-center justify-center">
+                    Activate Pro Now ($39/mo) &rarr;
+                </a>
             {% elif user.subscription_status == 'CANCELLED' %}
                 <form action="/api/subscription/reactivate" method="POST" class="w-full sm:w-auto">
                     <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-black text-xs shadow-lg transition">

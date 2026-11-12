@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
     LEMON_SQUEEZY_API_KEY: str = os.getenv("LEMON_SQUEEZY_API_KEY", "")
     LEMON_SQUEEZY_STORE_ID: str = os.getenv("LEMON_SQUEEZY_STORE_ID", "")
+    LEMON_SQUEEZY_CHECKOUT_URL: str = os.getenv("LEMON_SQUEEZY_CHECKOUT_URL", "https://jobcatch-ai.lemonsqueezy.com/checkout/buy/4bfc9c2d-14f7-45ef-ac35-cc1e23c80d42")
     
     # Compte Bancaire US de Réception (Lead Bank / Grey)
     LEAD_BANK_ROUTING: str = "101019644"

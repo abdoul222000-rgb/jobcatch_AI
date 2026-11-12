@@ -249,6 +249,16 @@ def billing_page(request: Request, user: User = Depends(get_current_user)):
     return templates.TemplateResponse(request=request, name="billing.html", context={"user": user, "settings": settings})
 
 
+@app.get("/checkout")
+def checkout_redirect(user = Depends(get_optional_user)):
+    """Redirige les candidats vers le checkout sécurisé Lemon Squeezy ($39/mo avec 3 jours d'essai gratuit)"""
+    url = settings.LEMON_SQUEEZY_CHECKOUT_URL
+    if user and user.email:
+        sep = "&" if "?" in url else "?"
+        url = f"{url}{sep}checkout[email]={user.email}&checkout[name]={user.full_name}"
+    return RedirectResponse(url=url, status_code=status.HTTP_303_SEE_OTHER)
+
+
 @app.post("/api/demo/upgrade")
 @app.post("/api/subscription/upgrade-now")
 def simulate_upgrade(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
