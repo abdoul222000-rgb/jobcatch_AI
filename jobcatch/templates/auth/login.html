@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div class="max-w-md w-full rounded-2xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur">
+        <div class="text-center">
+            <div class="w-12 h-12 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-400 mx-auto text-xl mb-3">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h1 class="text-2xl font-black text-white">Welcome Back</h1>
+            <p class="text-xs text-slate-400 mt-1">Sign in to your JobCatch AI candidate portal</p>
+        </div>
+
+        {% if error %}
+        <div class="mt-4 p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs text-center font-medium">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- 1-Click Instant Demo Login Button -->
+        <div class="mt-6">
+            <form action="/login" method="POST">
+                <input type="hidden" name="email" value="demo@jobcatch.ai">
+                <input type="hidden" name="password" value="jobcatch2026">
+                <button type="submit" class="w-full py-3 rounded-xl border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-bold text-xs flex items-center justify-center space-x-2 transition shadow-sm">
+                    <i class="fa-solid fa-bolt text-yellow-400"></i>
+                    <span>One-Click Instant Demo Login (Alex Rivera)</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="relative my-6 text-center">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+            <span class="relative px-3 bg-slate-900 text-[11px] font-bold uppercase tracking-wider text-slate-400">Or sign in with email</span>
+        </div>
+
+        <form action="/login" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Email Address</label>
+                <input type="email" name="email" required placeholder="name@university.edu"
+                       class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-purple-500 transition">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">Password</label>
+                <input type="password" name="password" required placeholder="••••••••"
+                       class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-purple-500 transition">
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm shadow-lg shadow-purple-600/25 transition">
+                Sign In &rarr;
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-400">
+            Don't have an account? <a href="/register" class="text-purple-400 font-bold hover:underline">Start 3-Day Free Trial</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

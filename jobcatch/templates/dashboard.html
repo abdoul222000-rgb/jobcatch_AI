@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Welcome Header & Subscription Banner -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+        <div>
+            <div class="flex items-center space-x-3">
+                <h1 class="text-2xl sm:text-3xl font-black text-white">Candidate Dashboard</h1>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Live</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">
+                Candidate: <strong class="text-white">{{ user.full_name }}</strong> &bull; Target: <span class="text-purple-300 font-semibold">{{ user.target_role }}</span> ({{ user.target_location }})
+            </p>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="/billing" class="px-4 py-2 rounded-xl border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 text-xs font-bold flex items-center space-x-2 transition shadow-sm">
+                <i class="fa-solid fa-crown text-yellow-400"></i>
+                <span>Plan: <strong>{{ user.subscription_status }}</strong> ($39/mo)</span>
+            </a>
+            <button onclick="document.getElementById('tailorModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-extrabold shadow-lg shadow-purple-600/25 flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tailor & Apply to New Job</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 4 KPI Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Applications Sent</div>
+            <div class="text-3xl font-black text-white mt-2">{{ applications|length }}</div>
+            <div class="text-[11px] text-purple-400 mt-1 flex items-center"><i class="fa-solid fa-bolt mr-1"></i>Auto-submitted to US ATS</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Average ATS Score</div>
+            <div class="text-3xl font-black text-emerald-400 mt-2">
+                {% if applications %}
+                    {% set total_score = applications|sum(attribute='match_score') %}
+                    {{ (total_score / applications|length)|round|int }}%
+                {% else %}
+                    94%
+                {% endif %}
+            </div>
+            <div class="text-[11px] text-emerald-400 mt-1 flex items-center"><i class="fa-solid fa-arrow-trend-up mr-1"></i>Top 5% of all applicants</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Active Interviews</div>
+            <div class="text-3xl font-black text-yellow-400 mt-2">
+                {{ applications|selectattr('status', 'equalto', 'INTERVIEW')|list|length }}
+            </div>
+            <div class="text-[11px] text-yellow-400 mt-1 flex items-center"><i class="fa-solid fa-calendar-check mr-1"></i>Recruiter screenings booked</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Job Offers</div>
+            <div class="text-3xl font-black text-purple-400 mt-2">
+                {{ applications|selectattr('status', 'equalto', 'OFFER')|list|length }}
+            </div>
+            <div class="text-[11px] text-purple-300 mt-1 flex items-center"><i class="fa-solid fa-trophy mr-1"></i>Official offers received</div>
+        </div>
+    </div>
+
+    <!-- Active Job Queue Table -->
+    <div class="mt-8 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur overflow-hidden">
+        <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+                <h2 class="text-lg font-black text-white">Live Application Tracker</h2>
+                <p class="text-xs text-slate-400">Every tailored resume, ATS score, and submission record</p>
+            </div>
+            <div class="text-xs text-slate-400">
+                Sorted by most recent
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-950/60 text-slate-400 uppercase tracking-wider text-[10px] border-b border-slate-800">
+                    <tr>
+                        <th class="py-3 px-4">Role & Company</th>
+                        <th class="py-3 px-4">Location & Salary</th>
+                        <th class="py-3 px-4">Platform</th>
+                        <th class="py-3 px-4">ATS Match</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                    {% for app in applications %}
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-4 px-4">
+                            <div class="font-bold text-white text-sm">{{ app.job_title }}</div>
+                            <div class="text-xs text-purple-400 font-semibold mt-0.5">{{ app.company_name }}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="text-slate-300">{{ app.job_location }}</div>
+                            <div class="text-[11px] text-slate-500 mt-0.5">{{ app.salary_range }}</div>
+                        </td>
+                        <td class="py-4 px-4">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">
+                                {{ app.platform }}
+                            </span>
+                        </td>
+                        <td class="py-4 px-4">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-extrabold text-sm {% if app.match_score >= 90 %}text-emerald-400{% else %}text-purple-400{% endif %}">
+                                    {{ app.match_score }}%
+                                </span>
+                                <div class="w-16 h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                    <div class="h-full {% if app.match_score >= 90 %}bg-emerald-400{% else %}bg-purple-500{% endif %}" style="width: {{ app.match_score }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-4 px-4">
+                            {% if app.status == 'OFFER' %}
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                                    <i class="fa-solid fa-trophy mr-1 text-yellow-400"></i>OFFER
+                                </span>
+                            {% elif app.status == 'INTERVIEW' %}
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider bg-yellow-500/10 text-yellow-300 border border-yellow-500/30 animate-pulse">
+                                    <i class="fa-solid fa-calendar-check mr-1"></i>INTERVIEW
+                                </span>
+                            {% elif app.status == 'REVIEWING' %}
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-300 border border-blue-500/30">
+                                    REVIEWING
+                                </span>
+                            {% else %}
+                                <span class="px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-slate-800 text-slate-300 border border-slate-700">
+                                    APPLIED
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-4 text-right">
+                            <button onclick="viewApplication('{{ app.id }}', '{{ app.company_name|escape }}', '{{ app.job_title|escape }}', '{{ app.match_score }}', `{{ app.tailored_bullet_points|escape }}`, `{{ app.cover_letter|escape }}`)" class="px-3 py-1.5 rounded-lg border border-slate-700 hover:border-purple-500/40 bg-slate-800/80 hover:bg-purple-500/10 text-xs font-bold text-slate-200 transition">
+                                View Details &rarr;
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Tailor & Apply to New Job -->
+<div id="tailorModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="max-w-xl w-full rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8 shadow-2xl relative">
+        <button onclick="document.getElementById('tailorModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="flex items-center space-x-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-lg">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-white">Tailor Resume & Auto-Apply</h3>
+                <p class="text-xs text-slate-400">AI rewrites bullet points and generates custom cover letter in 3s</p>
+            </div>
+        </div>
+
+        <form action="/api/tailor-and-apply" method="POST" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Company Name</label>
+                    <input type="text" name="company_name" required placeholder="e.g. OpenAI, Stripe, Amazon"
+                           class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Target Job Title</label>
+                    <input type="text" name="job_title" required placeholder="e.g. Software Engineer, Product Analyst"
+                           class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-purple-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Location</label>
+                    <input type="text" name="job_location" placeholder="Remote, USA" value="Remote, USA"
+                           class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-purple-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Platform</label>
+                    <select name="platform" class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-purple-500">
+                        <option value="LinkedIn">LinkedIn</option>
+                        <option value="Indeed">Indeed</option>
+                        <option value="Handshake">Handshake</option>
+                        <option value="ZipRecruiter">ZipRecruiter</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Job Description / Requirements (Paste Text)</label>
+                <textarea name="job_description" rows="4" required placeholder="Paste the job requirements from LinkedIn or Indeed here..."
+                          class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-purple-500 font-mono"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm shadow-xl shadow-purple-600/30 transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-bolt text-yellow-400"></i>
+                <span>Optimize to 95%+ ATS & Auto-Submit &rarr;</span>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal: View Application Details -->
+<div id="detailsModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full rounded-2xl border border-slate-800 bg-slate-900 p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <button onclick="document.getElementById('detailsModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h3 id="modalRole" class="text-lg font-black text-white"></h3>
+                <div id="modalCompany" class="text-xs text-purple-400 font-bold"></div>
+            </div>
+            <div id="modalScoreBadge" class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-black text-xs"></div>
+        </div>
+
+        <div class="mt-4">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Tailored ATS Bullet Points:</div>
+            <div id="modalBullets" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-200 whitespace-pre-line font-mono"></div>
+        </div>
+
+        <div class="mt-4">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Generated Cover Letter:</div>
+            <div id="modalLetter" class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 whitespace-pre-line"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewApplication(id, company, role, score, bullets, letter) {
+        document.getElementById('modalRole').innerText = role;
+        document.getElementById('modalCompany').innerText = company;
+        document.getElementById('modalScoreBadge').innerText = "ATS Score: " + score + "%";
+        document.getElementById('modalBullets').innerText = bullets || "No tailored bullets recorded.";
+        document.getElementById('modalLetter').innerText = letter || "No cover letter recorded.";
+        document.getElementById('detailsModal').classList.remove('hidden');
+    }
+</script>
+{% endblock %}

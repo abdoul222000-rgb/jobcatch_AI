@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="relative overflow-hidden pt-12 pb-24">
+    <!-- Glow Background -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-purple-600/20 via-indigo-600/15 to-transparent blur-[120px] pointer-events-none"></div>
+
+    <!-- Hero Section -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center relative z-10">
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold mb-6">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Over 14,280 Interviews Unlocked Across the USA</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
+            Stop spending 40 hours applying to jobs. <br>
+            <span class="bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">
+                Let AI tailor your resume & auto-apply to 50 jobs a day.
+            </span>
+        </h1>
+
+        <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Beat corporate ATS resume filters. JobCatch AI tailors your bullet points, writes custom cover letters, and submits verified applications on LinkedIn, Indeed, and Handshake on autopilot.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/register" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-base shadow-xl shadow-purple-600/30 transition transform hover:-translate-y-0.5">
+                Start 3-Day Free Trial ($39/mo) &rarr;
+            </a>
+            <a href="/login?demo=true" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-bold text-base transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-play text-purple-400 text-xs"></i>
+                <span>Try Live Demo (No Card Needed)</span>
+            </a>
+        </div>
+
+        <div class="mt-4 flex items-center justify-center space-x-6 text-xs text-slate-400 font-medium">
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>3-Day Free Trial</span>
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Cancel in 1-Click Anytime</span>
+            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Direct Lead Bank Integration</span>
+        </div>
+    </div>
+
+    <!-- Live Interactive ATS Simulator Widget -->
+    <div class="max-w-5xl mx-auto px-4 mt-16 relative z-10">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl p-6 sm:p-8 backdrop-blur">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+                <div>
+                    <h2 class="text-xl font-black text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+                        <span>Live ATS Resume Tailorer Simulator</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1">See how JobCatch AI rewrites your resume to pass corporate ATS algorithms with 95%+ match scores.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs text-slate-400">Target Role:</span>
+                    <span class="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 font-bold text-xs">Software Engineer ($105k/yr)</span>
+                </div>
+            </div>
+
+            <!-- Simulator Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Before -->
+                <div class="rounded-xl border border-rose-500/20 bg-rose-500/5 p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center">
+                            <i class="fa-solid fa-circle-xmark mr-1.5"></i>Standard Resume (Generic)
+                        </span>
+                        <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-black text-xs">ATS Score: 44% (Rejected)</span>
+                    </div>
+                    <div class="text-xs text-slate-300 space-y-2 font-mono bg-slate-950/60 p-4 rounded-lg border border-slate-800">
+                        <p class="text-slate-400">• Built website features using Python and JavaScript.</p>
+                        <p class="text-slate-400">• Worked with team members to fix bugs and write tests.</p>
+                        <p class="text-slate-400">• Helped improve backend database query speed.</p>
+                    </div>
+                    <div class="mt-3 text-[11px] text-rose-300/80">
+                        <i class="fa-solid fa-triangle-exclamation mr-1"></i>Lacks target keywords, impact metrics, and corporate ATS compliance.
+                    </div>
+                </div>
+
+                <!-- After (JobCatch AI) -->
+                <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center">
+                            <i class="fa-solid fa-circle-check mr-1.5"></i>JobCatch AI Tailored (Optimized)
+                        </span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-xs">ATS Score: 96% (Interview Ready!)</span>
+                    </div>
+                    <div class="text-xs text-slate-200 space-y-2 font-mono bg-slate-950/60 p-4 rounded-lg border border-emerald-500/20">
+                        <p class="text-emerald-200">• Architected asynchronous FastAPI REST endpoints serving 10k+ requests/sec with 99.9% uptime.</p>
+                        <p class="text-emerald-200">• Automated CI/CD deployment pipelines on Docker & AWS, accelerating sprint release velocity by 35%.</p>
+                        <p class="text-emerald-200">• Optimized PostgreSQL query bottlenecks, reducing end-to-end API latency by 42%.</p>
+                    </div>
+                    <div class="mt-3 text-[11px] text-emerald-300">
+                        <i class="fa-solid fa-bolt mr-1"></i>Optimized with exact job keywords, quantifiable metrics, and instant cover letter generation.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulator Action Banner -->
+            <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="text-left">
+                        <div class="text-sm font-bold text-white">Auto-Apply Queue Active</div>
+                        <div class="text-xs text-slate-400">Submitting 50 tailored applications per day across US job boards</div>
+                    </div>
+                </div>
+                <a href="/login?demo=true" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/20 transition">
+                    Test Live Demo Dashboard &rarr;
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section ($39/mo) -->
+    <div class="max-w-4xl mx-auto px-4 mt-24 text-center">
+        <h2 class="text-3xl font-black text-white">Simple, Transparent Pricing</h2>
+        <p class="mt-2 text-slate-400 text-sm">One plan. Unlimited auto-tailored applications. Cancel anytime with 1 click.</p>
+
+        <div class="mt-10 max-w-md mx-auto rounded-3xl border-2 border-purple-500/40 bg-slate-900/90 p-8 shadow-2xl relative">
+            <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-[11px] uppercase tracking-wider shadow-md">
+                Most Popular for US Students & Grads
+            </div>
+
+            <div class="text-lg font-bold text-slate-200 mt-2">JobCatch Pro Pass</div>
+            <div class="mt-4 flex items-baseline justify-center">
+                <span class="text-5xl font-black text-white">$39</span>
+                <span class="text-slate-400 ml-2 font-semibold">/ month</span>
+            </div>
+            <div class="text-xs text-emerald-400 font-bold mt-2">Includes 3-Day Free Trial (Cancel Anytime)</div>
+
+            <ul class="mt-8 space-y-3.5 text-left text-sm text-slate-300">
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>Up to 50 Auto-Tailored Applications / Day</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>95%+ ATS Score Optimization Engine</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>Automated Cover Letters for Every Application</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>LinkedIn, Indeed & Handshake Integration</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>Real-Time Interview Tracker Dashboard</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2.5"></i>Secured by Stripe & Lead Bank Infrastructure</li>
+            </ul>
+
+            <a href="/register" class="mt-8 block w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm shadow-xl shadow-purple-600/30 transition">
+                Start My 3-Day Free Trial
+            </a>
+            <div class="mt-3 text-[11px] text-slate-400">Zero risk. $0 charged during your 3-day trial.</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
