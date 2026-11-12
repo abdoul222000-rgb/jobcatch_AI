@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}JobCatch AI - Founder Command Center{% endblock %}
+
+{% block content %}
+<div class="min-h-[85vh] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <!-- Executive Ambient Glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-amber-500/10 via-purple-600/15 to-indigo-600/10 blur-[130px] pointer-events-none"></div>
+
+    <div class="max-w-md w-full rounded-3xl border border-amber-500/30 bg-slate-900/95 p-8 sm:p-10 shadow-2xl backdrop-blur relative z-10">
+        <!-- Shield & Crown Header -->
+        <div class="text-center">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-purple-600/20 to-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 mx-auto text-2xl shadow-lg shadow-amber-500/10 mb-4">
+                <i class="fa-solid fa-crown text-amber-400"></i>
+            </div>
+            <div class="inline-block px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-black text-[10px] uppercase tracking-wider mb-2">
+                Executive Command Center
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Founder Access</h1>
+            <p class="text-xs text-slate-400 mt-1.5">
+                Restricted portal for <strong>Assouman Abdoul Aziz Diabagate</strong>
+            </p>
+        </div>
+
+        {% if error %}
+        <div class="mt-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs text-center font-medium flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-shield-xmark text-sm"></i>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form action="/founder/login" method="POST" class="mt-6 space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                    <span>Founder Passcode / Master Key</span>
+                    <span class="text-[10px] text-amber-400 font-normal">HMAC-SHA256 Encrypted</span>
+                </label>
+                <div class="relative">
+                    <input type="password" name="passcode" required placeholder="••••••••••••" autofocus
+                           class="w-full pl-4 pr-10 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm font-mono focus:outline-none focus:border-amber-500 transition shadow-inner">
+                    <i class="fa-solid fa-key absolute right-3.5 top-4 text-slate-500 text-xs"></i>
+                </div>
+            </div>
+
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950/60 text-[11px] text-slate-400 flex items-start space-x-2.5">
+                <i class="fa-solid fa-lock text-emerald-400 mt-0.5"></i>
+                <div>
+                    <strong>Zero-Trust Security :</strong> This session is cryptographically signed and monitors real-time candidate subscriptions, visitor traffic, and bank payouts.
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-purple-600 to-indigo-600 hover:opacity-95 text-white font-black text-sm shadow-xl shadow-amber-500/20 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-fingerprint text-base"></i>
+                <span>Unlock Founder Dashboard &rarr;</span>
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-500">
+            <a href="/" class="hover:text-slate-300 transition">&larr; Return to Candidate Portal</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

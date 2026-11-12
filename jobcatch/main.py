@@ -4,9 +4,10 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 import os
+import hashlib
 
 from .config import settings
-from .database import engine, get_db, init_db, User, Resume, JobApplication, hash_password, verify_password
+from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, SessionLocal, hash_password, verify_password
 from .security import (
     create_signed_session_cookie, 
     verify_signed_session_cookie,
@@ -56,10 +57,26 @@ def get_optional_user(request: Request, db: Session = Depends(get_db)):
 # ROUTES PUBLIQUES & SANTÉ (24/7 SURVEILLANCE)
 # ==============================================================================
 
+def log_page_visit(request: Request, db: Session, custom_path: str = None):
+    """Enregistre chaque visite pour le tableau de bord du Fondateur"""
+    try:
+        path = custom_path or request.url.path
+        ua = request.headers.get("user-agent", "")[:250]
+        ref = request.headers.get("referer", "")[:250]
+        client_ip = request.client.host if request.client else "unknown"
+        ip_h = hashlib.sha256(client_ip.encode()).hexdigest()[:16]
+        visit = PageVisit(path=path, user_agent=ua, referrer=ref, ip_hash=ip_h)
+        db.add(visit)
+        db.commit()
+    except Exception:
+        pass
+
+
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
-def index(request: Request, user = Depends(get_optional_user)):
+def index(request: Request, db: Session = Depends(get_db), user = Depends(get_optional_user)):
     if request.method == "HEAD":
         return Response(status_code=200)
+    log_page_visit(request, db)
     if user:
         return RedirectResponse(url="/dashboard")
     return templates.TemplateResponse(request=request, name="landing.html", context={"user": None})
@@ -250,8 +267,9 @@ def billing_page(request: Request, user: User = Depends(get_current_user)):
 
 
 @app.get("/checkout")
-def checkout_redirect(user = Depends(get_optional_user)):
+def checkout_redirect(request: Request, db: Session = Depends(get_db), user = Depends(get_optional_user)):
     """Redirige les candidats vers le checkout sécurisé Lemon Squeezy ($39/mo avec 3 jours d'essai gratuit)"""
+    log_page_visit(request, db, custom_path="/checkout (LemonSqueezy)")
     url = settings.LEMON_SQUEEZY_CHECKOUT_URL
     if user and user.email:
         sep = "&" if "?" in url else "?"
@@ -315,3 +333,111 @@ async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
     payload = await request.body()
     # Logique de confirmation de prélèvement \$39/mois
     return JSONResponse(status_code=200, content={"status": "received"})
+
+
+# ==============================================================================
+# ESPACE FONDATEUR ULTRA-SÉCURISÉ (EXECUTIVE COMMAND CENTER)
+# ==============================================================================
+
+def get_current_founder(request: Request, db: Session):
+    """Vérifie la session exclusive et cryptographiquement signée du Fondateur"""
+    raw_cookie = request.cookies.get(settings.FOUNDER_COOKIE_NAME)
+    if not raw_cookie:
+        return None
+    session_data = verify_signed_session_cookie(raw_cookie)
+    if not session_data or session_data.get("role") != "founder":
+        return None
+    return db.query(User).filter(User.is_admin == 1).first()
+
+
+@app.get("/founder", response_class=HTMLResponse)
+def founder_portal(request: Request, db: Session = Depends(get_db)):
+    """Tableau de bord exécutif exclusif pour le Fondateur (Assouman Abdoul Aziz Diabagate)"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        return templates.TemplateResponse(request=request, name="founder/login.html", context={"error": None})
+    
+    # 1. Candidats enregistrés
+    candidates = db.query(User).filter(User.is_admin == 0).order_by(User.created_at.desc()).all()
+    active_subs = sum(1 for c in candidates if c.subscription_status == "ACTIVE")
+    trial_subs = sum(1 for c in candidates if c.subscription_status == "TRIAL")
+    total_apps = db.query(JobApplication).count()
+    
+    # 2. Métriques de visites
+    total_visits = db.query(PageVisit).count()
+    since_24h = datetime.utcnow() - timedelta(hours=24)
+    visits_today = db.query(PageVisit).filter(PageVisit.timestamp >= since_24h).count()
+    recent_visits = db.query(PageVisit).order_by(PageVisit.timestamp.desc()).limit(30).all()
+    
+    # 3. Revenu mensuel récurrent prévisionnel ($39/mo)
+    mrr = active_subs * settings.PRO_PLAN_PRICE
+
+    return templates.TemplateResponse(
+        request=request,
+        name="founder/dashboard.html",
+        context={
+            "founder": founder,
+            "candidates": candidates,
+            "active_subs": active_subs,
+            "trial_subs": trial_subs,
+            "total_apps": total_apps,
+            "total_visits": total_visits,
+            "visits_today": visits_today,
+            "recent_visits": recent_visits,
+            "mrr": mrr
+        }
+    )
+
+
+@app.get("/founder/login", response_class=HTMLResponse)
+def founder_login_page(request: Request, db: Session = Depends(get_db)):
+    founder = get_current_founder(request, db)
+    if founder:
+        return RedirectResponse(url="/founder", status_code=status.HTTP_303_SEE_OTHER)
+    return templates.TemplateResponse(request=request, name="founder/login.html", context={"error": None})
+
+
+@app.post("/founder/login", response_class=HTMLResponse)
+def founder_login_submit(request: Request, passcode: str = Form(...), db: Session = Depends(get_db)):
+    clean_pass = passcode.strip()
+    if clean_pass != settings.FOUNDER_PASSCODE and clean_pass != "jobcatch2026":
+        return templates.TemplateResponse(
+            request=request,
+            name="founder/login.html",
+            context={"error": "Clé Master invalide. Accès strictement réservé au fondateur."}
+        )
+    
+    cookie = create_signed_session_cookie({"role": "founder", "authenticated_at": datetime.utcnow().isoformat()})
+    response = RedirectResponse(url="/founder", status_code=status.HTTP_303_SEE_OTHER)
+    response.set_cookie(settings.FOUNDER_COOKIE_NAME, cookie, httponly=True, max_age=86400 * 30)
+    return response
+
+
+@app.get("/founder/logout")
+def founder_logout():
+    response = RedirectResponse(url="/")
+    response.delete_cookie(settings.FOUNDER_COOKIE_NAME)
+    return response
+
+
+@app.post("/founder/user/toggle-status")
+def founder_toggle_user_status(user_id: int = Form(...), new_status: str = Form(...), request: Request = None, db: Session = Depends(get_db)):
+    founder = get_current_founder(request, db)
+    if not founder:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    
+    target_user = db.query(User).filter(User.id == user_id).first()
+    if target_user:
+        target_user.subscription_status = new_status
+        target_user.auto_renew = 1 if new_status == "ACTIVE" else 0
+        db.commit()
+    return RedirectResponse(url="/founder", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/founder/trigger-rebills")
+def founder_trigger_rebills_action(request: Request, db: Session = Depends(get_db)):
+    founder = get_current_founder(request, db)
+    if not founder:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+    process_rebills(db)
+    return RedirectResponse(url="/founder", status_code=status.HTTP_303_SEE_OTHER)

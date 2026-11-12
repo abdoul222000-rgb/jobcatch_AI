@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     LEAD_BANK_ACCOUNT_LAST4: str = "9479"
     LEAD_BANK_BENEFICIARY: str = "Assouman Abdoul Aziz Diabagate"
     
+    # Espace Fondateur Ultra-Sécurisé (Executive Command Center)
+    FOUNDER_EMAIL: str = os.getenv("FOUNDER_EMAIL", "abdoul222000@gmail.com")
+    FOUNDER_PASSCODE: str = os.getenv("FOUNDER_PASSCODE", "JobCatch2026!Aziz")
+    FOUNDER_COOKIE_NAME: str = "jobcatch_founder_session"
+    
     # Intelligence Artificielle (Gemini / OpenAI pour l'optimisation ATS)
     AI_API_KEY: str = os.getenv("GEMINI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
 

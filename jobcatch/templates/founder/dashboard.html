@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}JobCatch AI - Founder Command Center{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Founder Header -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+        <div>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-purple-600 flex items-center justify-center text-white text-lg font-black shadow-lg shadow-amber-500/20">
+                    <i class="fa-solid fa-crown text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+                        <span>Founder Command Center</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30">Executive VIP</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        Chief Executive: <strong class="text-white">{{ founder.full_name }}</strong> &bull; Bank: <span class="text-emerald-400 font-bold">Push (Afrika Banque / BDA)</span> &bull; Lead Bank Routing: <span class="font-mono text-purple-300">101019644</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <a href="https://jobcatch-ai.lemonsqueezy.com/checkout/buy/4bfc9c2d-14f7-45ef-ac35-cc1e23c80d42" target="_blank" class="px-3.5 py-2 rounded-xl border border-purple-500/40 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 text-xs font-bold flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Open Live Checkout ↗</span>
+            </a>
+            <a href="/founder/logout" class="px-3.5 py-2 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-bold flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Lock Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 6 Executive KPI Metrics Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
+        <!-- Metric 1: Total Visitors -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>Site Visitors</span>
+                <i class="fa-solid fa-eye text-indigo-400"></i>
+            </div>
+            <div class="text-2xl font-black text-white mt-1">{{ total_visits }}</div>
+            <div class="text-[10px] text-emerald-400 mt-1 flex items-center">
+                <i class="fa-solid fa-arrow-trend-up mr-1"></i>{{ visits_today }} visits today
+            </div>
+        </div>
+
+        <!-- Metric 2: Registered Candidates -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>Candidates</span>
+                <i class="fa-solid fa-users text-purple-400"></i>
+            </div>
+            <div class="text-2xl font-black text-white mt-1">{{ candidates|length }}</div>
+            <div class="text-[10px] text-purple-300 mt-1">
+                Registered profiles
+            </div>
+        </div>
+
+        <!-- Metric 3: Active Subscribers ($39/mo) -->
+        <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-300 flex items-center justify-between">
+                <span>Subscribers</span>
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+            </div>
+            <div class="text-2xl font-black text-emerald-400 mt-1">{{ active_subs }}</div>
+            <div class="text-[10px] text-emerald-300/80 mt-1">
+                Paying $39.00 / month
+            </div>
+        </div>
+
+        <!-- Metric 4: Free Trials Active -->
+        <div class="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-amber-300 flex items-center justify-between">
+                <span>Trials (3 Days)</span>
+                <i class="fa-solid fa-clock text-amber-400"></i>
+            </div>
+            <div class="text-2xl font-black text-amber-400 mt-1">{{ trial_subs }}</div>
+            <div class="text-[10px] text-amber-300/80 mt-1">
+                Auto-bills $39 on Day 4
+            </div>
+        </div>
+
+        <!-- Metric 5: Estimated MRR -->
+        <div class="rounded-2xl border border-purple-500/30 bg-purple-500/5 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-purple-300 flex items-center justify-between">
+                <span>Monthly MRR</span>
+                <i class="fa-solid fa-dollar-sign text-purple-400"></i>
+            </div>
+            <div class="text-2xl font-black text-white mt-1">${{ "%.2f"|format(mrr) }}</div>
+            <div class="text-[10px] text-purple-300 mt-1">
+                Net margin &gt; 95%
+            </div>
+        </div>
+
+        <!-- Metric 6: Total Applications Processed -->
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                <span>AI Apps Sent</span>
+                <i class="fa-solid fa-bolt text-yellow-400"></i>
+            </div>
+            <div class="text-2xl font-black text-yellow-400 mt-1">{{ total_apps }}</div>
+            <div class="text-[10px] text-slate-400 mt-1">
+                95%+ ATS compliance
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Action Bar -->
+    <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-4 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center space-x-3 text-xs text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span><strong>Server Health:</strong> Online & UptimeRobot Monitoring 24/7 (Port 8080 / Render)</span>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <form action="/founder/trigger-rebills" method="POST">
+                <button type="submit" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-rotate text-xs"></i>
+                    <span>Run Day 4 Auto-Debit Check</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left 2 Cols: Candidates & Subscribers List -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur overflow-hidden">
+                <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-black text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-address-card text-purple-400"></i>
+                            <span>All Registered Candidates & Subscribers</span>
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Real-time database of candidates, card authorizations, and membership statuses</p>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-mono text-xs font-bold">
+                        {{ candidates|length }} Accounts
+                    </span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-950/80 text-slate-400 uppercase tracking-wider text-[10px] border-b border-slate-800">
+                            <tr>
+                                <th class="py-3 px-4">Candidate</th>
+                                <th class="py-3 px-4">Target Role</th>
+                                <th class="py-3 px-4">Card on File</th>
+                                <th class="py-3 px-4">Plan Status</th>
+                                <th class="py-3 px-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                            {% for cand in candidates %}
+                            <tr class="hover:bg-slate-800/40 transition">
+                                <td class="py-3.5 px-4">
+                                    <div class="font-bold text-white text-xs flex items-center space-x-1.5">
+                                        <span>{{ cand.full_name }}</span>
+                                        {% if cand.is_admin == 1 %}
+                                            <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-black">YOU</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="text-[11px] text-purple-400 font-mono">{{ cand.email }}</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5">Joined: {{ cand.created_at.strftime('%b %d, %Y') if cand.created_at else 'Recent' }}</div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="text-xs text-slate-200 font-semibold">{{ cand.target_role }}</div>
+                                    <div class="text-[10px] text-slate-400">{{ cand.target_location }}</div>
+                                    <div class="text-[10px] text-slate-500 mt-0.5">{{ cand.applications|length }} applications sent</div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    <div class="font-mono text-xs text-white flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-credit-card text-indigo-400"></i>
+                                        <span>{{ cand.card_brand }} &bull;&bull;&bull;&bull; {{ cand.card_last4 }}</span>
+                                    </div>
+                                    <div class="text-[10px] text-slate-400 mt-0.5">Exp: {{ cand.card_exp }}</div>
+                                </td>
+                                <td class="py-3.5 px-4">
+                                    {% if cand.subscription_status == 'ACTIVE' %}
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                            ACTIVE ($39/mo)
+                                        </span>
+                                    {% elif cand.subscription_status == 'TRIAL' %}
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                                            3-DAY TRIAL
+                                        </span>
+                                        <div class="text-[10px] text-amber-300/80 mt-1">Rebills: {{ cand.trial_ends_at.strftime('%b %d') if cand.trial_ends_at else 'Day 4' }}</div>
+                                    {% else %}
+                                        <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                                            CANCELLED
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-3.5 px-4 text-right">
+                                    <form action="/founder/user/toggle-status" method="POST" class="inline-block">
+                                        <input type="hidden" name="user_id" value="{{ cand.id }}">
+                                        {% if cand.subscription_status == 'TRIAL' %}
+                                            <button type="submit" name="new_status" value="ACTIVE" title="Force activate to Paid Pro"
+                                                    class="px-2.5 py-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 text-[10px] font-bold transition">
+                                                Activate Pro
+                                            </button>
+                                        {% elif cand.subscription_status == 'ACTIVE' %}
+                                            <button type="submit" name="new_status" value="CANCELLED" title="Cancel subscription"
+                                                    class="px-2.5 py-1 rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 text-[10px] font-bold transition">
+                                                Suspend
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" name="new_status" value="ACTIVE" title="Reactivate"
+                                                    class="px-2.5 py-1 rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 text-[10px] font-bold transition">
+                                                Reactivate
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Col: Real-time Live Visitor Stream -->
+        <div class="space-y-6">
+            <div class="rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur p-5">
+                <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                    <div>
+                        <h2 class="text-base font-black text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-signal text-emerald-400"></i>
+                            <span>Live Visitor Stream</span>
+                        </h2>
+                        <p class="text-[11px] text-slate-400">Incoming traffic (TikTok, Reddit, USA direct)</p>
+                    </div>
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                </div>
+
+                <div class="mt-4 space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                    {% if recent_visits %}
+                        {% for visit in recent_visits %}
+                        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs flex flex-col space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="font-mono font-bold text-purple-300">{{ visit.path }}</span>
+                                <span class="text-[10px] text-slate-400">{{ visit.timestamp.strftime('%H:%M:%S') if visit.timestamp else 'Just now' }}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-300 truncate">
+                                {% if 'TikTok' in (visit.user_agent or '') %}
+                                    <span class="text-pink-400 font-bold"><i class="fa-brands fa-tiktok mr-1"></i>TikTok In-App Browser</span>
+                                {% elif 'Reddit' in (visit.user_agent or '') %}
+                                    <span class="text-orange-400 font-bold"><i class="fa-brands fa-reddit mr-1"></i>Reddit Traffic</span>
+                                {% elif 'Mobile' in (visit.user_agent or '') %}
+                                    <span class="text-blue-400"><i class="fa-solid fa-mobile-screen mr-1"></i>Mobile User</span>
+                                {% else %}
+                                    <span class="text-slate-400"><i class="fa-solid fa-desktop mr-1"></i>Desktop Browser</span>
+                                {% endif %}
+                            </div>
+                            {% if visit.referrer %}
+                            <div class="text-[10px] text-slate-500 truncate">
+                                Source: {{ visit.referrer }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-6 text-center text-xs text-slate-500">
+                            <i class="fa-solid fa-globe text-2xl text-slate-700 mb-2"></i>
+                            <div>No external visits recorded yet.</div>
+                            <div class="text-[10px] text-slate-600 mt-1">Traffic from TikTok and Reddit will appear here automatically.</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Financial Settlement Card -->
+            <div class="rounded-2xl border border-slate-800 bg-slate-950 p-5 space-y-3 text-xs">
+                <div class="font-bold text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-building-columns text-amber-400"></i>
+                    <span>Banking Payout Routes</span>
+                </div>
+                <div class="text-slate-400 text-[11px] space-y-1.5 font-mono">
+                    <div class="flex justify-between">
+                        <span>Lead Bank Routing:</span>
+                        <span class="text-white">101019644</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Lead Bank Acct:</span>
+                        <span class="text-white">...9479</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Push (Afrika Banque):</span>
+                        <span class="text-emerald-400">CI201 ... 8752</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Holder:</span>
+                        <span class="text-purple-300">A. A. Aziz Diabagate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

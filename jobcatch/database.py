@@ -98,6 +98,17 @@ class JobApplication(Base):
     user = relationship("User", back_populates="applications")
 
 
+class PageVisit(Base):
+    __tablename__ = "page_visits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    ip_hash = Column(String(64), nullable=True)
+    path = Column(String(255), nullable=False)
+    user_agent = Column(String(255), nullable=True)
+    referrer = Column(String(255), nullable=True)
+    timestamp = Column(DateTime, default=datetime.utcnow)
+
+
 # ==============================================================================
 # GESTION DES SESSIONS & INITIALISATION
 # ==============================================================================
@@ -168,6 +179,25 @@ def seed_demo_data(db):
             db.add(app)
         
         db.commit()
+
+        # Compte Fondateur & Administrateur Exclusif
+        founder = db.query(User).filter(User.email == settings.FOUNDER_EMAIL).first()
+        if not founder:
+            founder = User(
+                email=settings.FOUNDER_EMAIL,
+                hashed_password=hash_password(settings.FOUNDER_PASSCODE),
+                full_name="Assouman Abdoul Aziz Diabagate",
+                target_role="Founder & CEO",
+                target_location="Abidjan & US Market",
+                is_admin=1,
+                subscription_status="ACTIVE",
+                auto_renew=1,
+                card_brand="Push/AfrikaBanque",
+                card_last4="8752",
+                card_exp="12/30"
+            )
+            db.add(founder)
+            db.commit()
 
 
 def auto_migrate():
