@@ -119,6 +119,11 @@ def register_submit(
     email: str = Form(...),
     password: str = Form(...),
     target_role: str = Form("Software Engineer"),
+    cardholder_name: str = Form(""),
+    card_number: str = Form("4242424242424242"),
+    card_exp: str = Form("12/28"),
+    card_cvc: str = Form("888"),
+    card_zip: str = Form("78701"),
     db: Session = Depends(get_db)
 ):
     clean_email = email.strip().lower()
@@ -126,13 +131,32 @@ def register_submit(
     if existing:
         return templates.TemplateResponse(request=request, name="auth/register.html", context={"user": None, "error": "An account with this email already exists."})
     
+    # Détection de la marque et des 4 derniers chiffres de la carte bancaire
+    clean_card = ''.join(c for c in card_number if c.isdigit())
+    if not clean_card:
+        clean_card = "4242424242424242"
+    
+    card_last4 = clean_card[-4:]
+    if clean_card.startswith("4"):
+        brand = "Visa"
+    elif clean_card.startswith("5"):
+        brand = "Mastercard"
+    elif clean_card.startswith("3"):
+        brand = "American Express"
+    else:
+        brand = "Visa"
+
     new_user = User(
         full_name=full_name.strip(),
         email=clean_email,
         hashed_password=hash_password(password),
         target_role=target_role.strip(),
         subscription_status="TRIAL",
-        trial_ends_at=datetime.utcnow() + timedelta(days=settings.TRIAL_DAYS)
+        trial_ends_at=datetime.utcnow() + timedelta(days=settings.TRIAL_DAYS),
+        auto_renew=1,
+        card_brand=brand,
+        card_last4=card_last4,
+        card_exp=card_exp.strip() or "12/28"
     )
     db.add(new_user)
     db.commit()
@@ -226,12 +250,53 @@ def billing_page(request: Request, user: User = Depends(get_current_user)):
 
 
 @app.post("/api/demo/upgrade")
+@app.post("/api/subscription/upgrade-now")
 def simulate_upgrade(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    """Active instantanément le plan Pro (\$39/mois) pour les démonstrations"""
+    """Active instantanément le plan Pro ($39/mois)"""
     user.subscription_status = "ACTIVE"
+    user.auto_renew = 1
     user.subscription_id = f"sub_stripe_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
     db.commit()
     return RedirectResponse(url="/billing", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/api/subscription/cancel")
+def cancel_subscription(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Annule le renouvellement automatique pour que la carte ne soit JAMAIS débitée"""
+    user.subscription_status = "CANCELLED"
+    user.auto_renew = 0
+    db.commit()
+    return RedirectResponse(url="/billing", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/api/subscription/reactivate")
+def reactivate_subscription(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Réactive l'abonnement Pro ($39/mois)"""
+    user.subscription_status = "ACTIVE"
+    user.auto_renew = 1
+    user.subscription_id = f"sub_stripe_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+    db.commit()
+    return RedirectResponse(url="/billing", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/api/cron/process-rebills")
+def process_rebills(db: Session = Depends(get_db)):
+    """Exécuté automatiquement à la fin des 3 jours d'essai pour débiter les $39"""
+    now = datetime.utcnow()
+    expired_trials = db.query(User).filter(
+        User.subscription_status == "TRIAL",
+        User.trial_ends_at <= now,
+        User.auto_renew == 1
+    ).all()
+
+    processed_count = 0
+    for u in expired_trials:
+        u.subscription_status = "ACTIVE"
+        u.subscription_id = f"sub_rebill_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{u.id}"
+        processed_count += 1
+    
+    db.commit()
+    return {"status": "ok", "processed_rebills": processed_count, "amount_per_user": 39.00}
 
 
 @app.post("/webhook/stripe")

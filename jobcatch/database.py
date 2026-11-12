@@ -40,10 +40,17 @@ class User(Base):
     target_role = Column(String(255), default="Software Engineer")
     target_location = Column(String(255), default="Remote, USA")
     
-    # Statut d'abonnement (\$39/mois)
+    # Statut d'abonnement ($39/mois) & Paiement par Carte Obligatoire
     subscription_status = Column(String(50), default="TRIAL")  # TRIAL, ACTIVE, CANCELLED
     trial_ends_at = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=settings.TRIAL_DAYS))
     subscription_id = Column(String(255), nullable=True)
+    auto_renew = Column(Integer, default=1)  # 1 = Renouvellement automatique $39/mo, 0 = Annulé
+    
+    # Données Carte Bancaire enregistrée pour le débit automatique après 3 jours
+    card_brand = Column(String(50), default="Visa")
+    card_last4 = Column(String(4), default="4242")
+    card_exp = Column(String(10), default="12/28")
+    
     created_at = Column(DateTime, default=datetime.utcnow)
 
     resumes = relationship("Resume", back_populates="user", cascade="all, delete-orphan")
@@ -110,7 +117,11 @@ def seed_demo_data(db):
             target_role="Full-Stack Developer",
             target_location="Remote / Austin, TX",
             subscription_status="TRIAL",
-            trial_ends_at=datetime.utcnow() + timedelta(days=3)
+            trial_ends_at=datetime.utcnow() + timedelta(days=3),
+            auto_renew=1,
+            card_brand="Visa",
+            card_last4="4242",
+            card_exp="12/28"
         )
         db.add(demo_user)
         db.commit()

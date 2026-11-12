@@ -9,83 +9,146 @@
         </span>
         <h1 class="text-3xl sm:text-4xl font-black text-white mt-3">JobCatch Pro Membership</h1>
         <p class="text-xs sm:text-sm text-slate-400 mt-2 max-w-xl mx-auto">
-            Manage your subscription, 3-day free trial status, and payment receipts.
+            Manage your subscription, 3-day trial auto-billing, card on file, and payment receipts.
         </p>
     </div>
 
     <!-- Active Plan Status Banner -->
-    <div class="mt-8 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="mt-8 rounded-2xl border border-slate-800 bg-slate-900/60 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-crown text-yellow-400"></i>
+            <div class="w-14 h-14 rounded-2xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-2xl">
+                {% if user.subscription_status == 'ACTIVE' %}
+                    <i class="fa-solid fa-crown text-yellow-400"></i>
+                {% elif user.subscription_status == 'TRIAL' %}
+                    <i class="fa-solid fa-clock text-purple-400"></i>
+                {% else %}
+                    <i class="fa-solid fa-ban text-rose-400"></i>
+                {% endif %}
             </div>
             <div>
                 <div class="text-xs text-slate-400 uppercase font-bold tracking-wider">Current Membership Status</div>
-                <div class="text-xl font-black text-white flex items-center space-x-2 mt-0.5">
-                    <span>{{ user.subscription_status }}</span>
+                <div class="text-xl font-black text-white flex flex-wrap items-center gap-2 mt-1">
                     {% if user.subscription_status == 'TRIAL' %}
-                        <span class="px-2 py-0.5 rounded bg-yellow-500/20 text-yellow-400 text-xs font-bold">3-Day Free Trial Active</span>
+                        <span>3-Day Free Trial ($0 Paid)</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-yellow-500/20 text-yellow-400 text-xs font-bold">Auto-renews at $39/mo</span>
+                    {% elif user.subscription_status == 'ACTIVE' %}
+                        <span>JobCatch Pro Subscriber</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold">$39.00 / month</span>
                     {% else %}
-                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-xs font-bold">Active Pro Subscriber ($39/mo)</span>
+                        <span>Subscription Cancelled</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 text-xs font-bold">No future charges</span>
+                    {% endif %}
+                </div>
+                <div class="text-xs text-slate-400 mt-1">
+                    {% if user.subscription_status == 'TRIAL' %}
+                        First billing of <strong>$39.00</strong> scheduled for <strong>{{ user.trial_ends_at.strftime('%B %d, %Y') if user.trial_ends_at else 'Day 4' }}</strong>.
+                    {% elif user.subscription_status == 'ACTIVE' %}
+                        Renews automatically each month. Cancel anytime with 1 click.
+                    {% else %}
+                        You will not be charged. You can reactivate anytime.
                     {% endif %}
                 </div>
             </div>
         </div>
 
-        {% if user.subscription_status == 'TRIAL' %}
-            <form action="/api/demo/upgrade" method="POST">
-                <button type="submit" class="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/25 transition">
-                    Activate Pro Plan ($39/mo) Now &rarr;
-                </button>
-            </form>
-        {% else %}
-            <span class="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-xs">
-                <i class="fa-solid fa-check mr-1.5"></i>All Features Unlocked
-            </span>
-        {% endif %}
-    </div>
-
-    <!-- Pricing Card -->
-    <div class="mt-8 max-w-md mx-auto rounded-3xl border border-purple-500/40 bg-slate-900 p-8 shadow-2xl relative text-center">
-        <div class="text-xs font-bold uppercase tracking-wider text-purple-400">Standard Plan</div>
-        <div class="text-2xl font-black text-white mt-1">JobCatch Pro Pass</div>
-        <div class="mt-4 flex items-baseline justify-center">
-            <span class="text-5xl font-black text-white">$39</span>
-            <span class="text-slate-400 ml-2 font-semibold">/ month</span>
-        </div>
-        <div class="text-xs text-emerald-400 font-bold mt-2">Billed monthly &bull; Cancel anytime</div>
-
-        <ul class="mt-6 space-y-3 text-left text-xs text-slate-300">
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>Up to 50 auto-tailored applications daily</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>95%+ ATS Score Optimization</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>Automated custom cover letters</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>LinkedIn, Indeed & Handshake integration</li>
-            <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>Interview & recruiter screening tracker</li>
-        </ul>
-
-        <div class="mt-8">
-            <form action="/api/demo/upgrade" method="POST">
-                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-xl shadow-purple-600/30 transition">
-                    {% if user.subscription_status == 'TRIAL' %}Upgrade to Active Pro ($39/mo){% else %}Pro Plan Currently Active{% endif %}
-                </button>
-            </form>
+        <!-- 1-Click Action Buttons -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {% if user.subscription_status == 'TRIAL' %}
+                <form action="/api/subscription/cancel" method="POST" class="w-full sm:w-auto">
+                    <button type="submit" onclick="return confirm('Are you sure? This will cancel your auto-renewal and you will never be charged $39.')"
+                            class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-xs transition">
+                        Cancel Auto-Renew (Pay $0)
+                    </button>
+                </form>
+                <form action="/api/subscription/upgrade-now" method="POST" class="w-full sm:w-auto">
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs shadow-lg shadow-purple-600/25 transition">
+                        Activate Pro Now ($39/mo) &rarr;
+                    </button>
+                </form>
+            {% elif user.subscription_status == 'CANCELLED' %}
+                <form action="/api/subscription/reactivate" method="POST" class="w-full sm:w-auto">
+                    <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-black text-xs shadow-lg transition">
+                        Reactivate Pro ($39/mo) &rarr;
+                    </button>
+                </form>
+            {% else %}
+                <form action="/api/subscription/cancel" method="POST" class="w-full sm:w-auto">
+                    <button type="submit" onclick="return confirm('Cancel Pro subscription?')"
+                            class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs transition">
+                        Cancel Subscription
+                    </button>
+                </form>
+            {% endif %}
         </div>
     </div>
 
-    <!-- Lead Bank Security Badge -->
-    <div class="mt-12 rounded-2xl border border-slate-800 bg-slate-950/60 p-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+    <!-- Payment Method On File (Stripe / Lemon Squeezy Card) -->
+    <div class="mt-6 rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Payment Method on File</div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-credit-card"></i>
+                </div>
+                <div>
+                    <div class="text-sm font-bold text-white flex items-center space-x-2">
+                        <span>{{ user.card_brand }} ending in <strong>{{ user.card_last4 }}</strong></span>
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Verified</span>
+                    </div>
+                    <div class="text-xs text-slate-400 mt-0.5">Expires {{ user.card_exp }} &bull; Default for recurring $39.00 billing</div>
+                </div>
+            </div>
+            <div class="text-xs text-slate-400 flex items-center space-x-1">
+                <i class="fa-solid fa-lock text-emerald-400 mr-1"></i>
+                <span>Encrypted via Stripe 256-bit SSL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Feature Details -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-sm font-black text-white uppercase tracking-wider mb-4 flex items-center">
+                <i class="fa-solid fa-circle-check text-purple-400 mr-2"></i>
+                What Your $39/mo Membership Unlocks
+            </h3>
+            <ul class="space-y-3 text-xs text-slate-300">
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>50 auto-tailored applications per day</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>95%+ ATS Score Optimization Engine</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>Automated custom cover letters generated in 3s</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>LinkedIn, Indeed & Handshake integration</li>
+                <li class="flex items-center"><i class="fa-solid fa-check text-purple-400 mr-2"></i>Interview & recruiter screening tracker</li>
+            </ul>
+        </div>
+
+        <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-6">
+            <h3 class="text-sm font-black text-white uppercase tracking-wider mb-4 flex items-center">
+                <i class="fa-solid fa-shield-halved text-emerald-400 mr-2"></i>
+                Billing Transparency & Guarantee
+            </h3>
+            <ul class="space-y-3 text-xs text-slate-300">
+                <li class="flex items-center"><i class="fa-solid fa-arrow-right text-emerald-400 mr-2"></i>$0.00 charged during your 3-day trial period</li>
+                <li class="flex items-center"><i class="fa-solid fa-arrow-right text-emerald-400 mr-2"></i>Automated email notification 24h before renewal</li>
+                <li class="flex items-center"><i class="fa-solid fa-arrow-right text-emerald-400 mr-2"></i>1-click self-service cancellation anytime</li>
+                <li class="flex items-center"><i class="fa-solid fa-arrow-right text-emerald-400 mr-2"></i>No lock-in contracts or cancellation penalties</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Lead Bank Settlement Security Badge -->
+    <div class="mt-8 rounded-2xl border border-slate-800 bg-slate-950/80 p-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
         <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-purple-400 text-lg">
                 <i class="fa-solid fa-building-columns"></i>
             </div>
             <div>
-                <div class="font-bold text-white">Direct US Bank Settlement</div>
+                <div class="font-bold text-white">Direct US Bank Settlement Infrastructure</div>
                 <div>Routing: <span class="font-mono text-purple-300">101019644</span> &bull; Lead Bank (Kansas City, MO) &bull; Acct: <span class="font-mono text-purple-300">...9479</span></div>
             </div>
         </div>
         <div class="flex items-center space-x-2 text-slate-300">
             <i class="fa-solid fa-lock text-emerald-400"></i>
-            <span>Stripe 256-Bit SSL Encrypted</span>
+            <span>Stripe & Lemon Squeezy Verified</span>
         </div>
     </div>
 </div>

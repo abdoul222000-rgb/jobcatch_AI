@@ -26,6 +26,33 @@
         </div>
     </div>
 
+    <!-- Trial & Billing Status Notification Banner -->
+    {% if user.subscription_status == 'TRIAL' %}
+    <div class="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-yellow-200 gap-2">
+        <div class="flex items-center space-x-2.5">
+            <span class="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
+            <span>
+                <strong>3-Day Free Trial Active ($0 Billed Today).</strong> Auto-renews at $39/mo on <strong>{{ user.trial_ends_at.strftime('%b %d, %Y') if user.trial_ends_at else 'Day 4' }}</strong> (Card on file: {{ user.card_brand }} &bull;&bull;&bull;&bull; {{ user.card_last4 }}).
+            </span>
+        </div>
+        <a href="/billing" class="text-yellow-400 hover:underline font-bold whitespace-nowrap text-[11px]">
+            Manage / Cancel in 1-Click &rarr;
+        </a>
+    </div>
+    {% elif user.subscription_status == 'CANCELLED' %}
+    <div class="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-rose-200 gap-2">
+        <div class="flex items-center space-x-2.5">
+            <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+            <span>
+                <strong>Auto-Renew Cancelled.</strong> Your card will <strong>never</strong> be charged $39. Full access remains active until your trial ends.
+            </span>
+        </div>
+        <a href="/billing" class="text-rose-300 hover:underline font-bold whitespace-nowrap text-[11px]">
+            Reactivate Pro ($39/mo) &rarr;
+        </a>
+    </div>
+    {% endif %}
+
     <!-- 4 KPI Cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
