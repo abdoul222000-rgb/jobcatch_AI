@@ -4,6 +4,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime, timedelta
 import hashlib
 import hmac
+import os
 
 from .config import settings
 
@@ -39,6 +40,9 @@ class User(Base):
     full_name = Column(String(255), nullable=False)
     target_role = Column(String(255), default="Software Engineer")
     target_location = Column(String(255), default="Remote, USA")
+    
+    # Rôle & Sécurité Fondateur
+    is_admin = Column(Integer, default=0)  # 1 = Fondateur / Administrateur Exclusif, 0 = Candidat
     
     # Statut d'abonnement ($39/mois) & Paiement par Carte Obligatoire
     subscription_status = Column(String(50), default="TRIAL")  # TRIAL, ACTIVE, CANCELLED
@@ -166,7 +170,45 @@ def seed_demo_data(db):
         db.commit()
 
 
+def auto_migrate():
+    """Vérifie et ajoute les colonnes manquantes dans SQLite sans casser les données"""
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(Base.metadata.tables["users"].select().limit(0))
+    except Exception:
+        pass
+    
+    # Pragma check direct pour SQLite
+    if "sqlite" in settings.DATABASE_URL:
+        import sqlite3
+        db_path = settings.DATABASE_URL.replace("sqlite:///", "").replace("sqlite://", "")
+        if os.path.exists(db_path):
+            conn = sqlite3.connect(db_path)
+            c = conn.cursor()
+            c.execute("PRAGMA table_info(users)")
+            existing_cols = {row[1] for row in c.fetchall()}
+            
+            columns_to_ensure = {
+                "is_admin": "INTEGER DEFAULT 0",
+                "card_brand": "VARCHAR(50) DEFAULT 'Visa'",
+                "card_last4": "VARCHAR(4) DEFAULT '4242'",
+                "card_exp": "VARCHAR(10) DEFAULT '12/28'",
+                "auto_renew": "INTEGER DEFAULT 1",
+                "subscription_status": "VARCHAR(50) DEFAULT 'TRIAL'",
+                "subscription_id": "VARCHAR(255)"
+            }
+            for col, col_type in columns_to_ensure.items():
+                if col not in existing_cols and existing_cols:
+                    try:
+                        c.execute(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
+                    except Exception:
+                        pass
+            conn.commit()
+            conn.close()
+
+
 def init_db():
+    auto_migrate()
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
