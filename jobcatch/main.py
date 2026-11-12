@@ -7,13 +7,14 @@ import os
 import hashlib
 
 from .config import settings
-from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, SessionLocal, hash_password, verify_password
+from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, RadarLead, SessionLocal, hash_password, verify_password
 from .security import (
     create_signed_session_cookie, 
     verify_signed_session_cookie,
     SecurityHeadersMiddleware
 )
 from .services.ai_tailor import tailor_resume_for_job
+from .radar import scan_reddit_and_store
 
 app = FastAPI(title="JobCatch AI - Auto-Apply & Resume Tailorer for US Job Seekers")
 
@@ -372,6 +373,9 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
     # 3. Revenu mensuel récurrent prévisionnel ($39/mo)
     mrr = active_subs * settings.PRO_PLAN_PRICE
 
+    # 4. Opportunités chaudes détectées par le Radar Reddit
+    radar_leads = db.query(RadarLead).order_by(RadarLead.created_at.desc()).limit(15).all()
+
     return templates.TemplateResponse(
         request=request,
         name="founder/dashboard.html",
@@ -384,9 +388,36 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
             "total_visits": total_visits,
             "visits_today": visits_today,
             "recent_visits": recent_visits,
+            "radar_leads": radar_leads,
             "mrr": mrr
         }
     )
+
+
+@app.get("/founder/radar/scan")
+def trigger_radar_scan(request: Request, db: Session = Depends(get_db)):
+    """Déclenche un scan manuel du radar Reddit depuis le mobile du fondateur"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        return RedirectResponse(url="/founder/login", status_code=status.HTTP_303_SEE_OTHER)
+    try:
+        scan_reddit_and_store(max_leads=5, db_session=db)
+    except Exception:
+        pass
+    return RedirectResponse(url="/founder#radar", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/founder/radar/mark-copied/{lead_id}")
+def mark_radar_lead_copied(lead_id: int, request: Request, db: Session = Depends(get_db)):
+    """Marque une réponse comme copiée/postée"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    lead = db.query(RadarLead).filter(RadarLead.id == lead_id).first()
+    if lead:
+        lead.status = "COPIED"
+        db.commit()
+    return {"status": "ok", "lead_id": lead_id}
 
 
 @app.get("/founder/login", response_class=HTMLResponse)

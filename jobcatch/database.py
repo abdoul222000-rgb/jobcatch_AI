@@ -109,6 +109,22 @@ class PageVisit(Base):
     timestamp = Column(DateTime, default=datetime.utcnow)
 
 
+class RadarLead(Base):
+    __tablename__ = "radar_leads"
+
+    id = Column(Integer, primary_key=True, index=True)
+    reddit_id = Column(String(50), unique=True, index=True)
+    subreddit = Column(String(50), nullable=False)
+    title = Column(String(500), nullable=False)
+    url = Column(String(500), nullable=False)
+    author = Column(String(100), nullable=True)
+    snippet = Column(Text, nullable=True)
+    matched_keyword = Column(String(100), nullable=True)
+    suggested_reply = Column(Text, nullable=False)
+    status = Column(String(20), default="NEW")  # NEW, COPIED, ARCHIVED
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 # ==============================================================================
 # GESTION DES SESSIONS & INITIALISATION
 # ==============================================================================

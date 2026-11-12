@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     FOUNDER_PASSCODE: str = os.getenv("FOUNDER_PASSCODE", "JobCatch2026!Aziz")
     FOUNDER_COOKIE_NAME: str = "jobcatch_founder_session"
     
+    # Notifications Telegram pour le Radar Reddit
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
+    TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
+    
     # Intelligence Artificielle (Gemini / OpenAI pour l'optimisation ATS)
     AI_API_KEY: str = os.getenv("GEMINI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
 
