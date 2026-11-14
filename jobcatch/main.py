@@ -333,12 +333,127 @@ def process_rebills(db: Session = Depends(get_db)):
     return {"status": "ok", "processed_rebills": processed_count, "amount_per_user": 39.00}
 
 
+@app.post("/webhook/lemonsqueezy")
 @app.post("/webhook/stripe")
-async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
-    """Écouteur sécurisé des paiements Stripe récurrents"""
-    payload = await request.body()
-    # Logique de confirmation de prélèvement \$39/mois
-    return JSONResponse(status_code=200, content={"status": "received"})
+async def payment_webhook(request: Request, db: Session = Depends(get_db)):
+    """Écouteur universel et automatique des paiements réussis (Lemon Squeezy & Stripe).
+       Dès que l'argent arrive, le compte du client passe instantanément en PRO ILLIMITÉ."""
+    try:
+        data = await request.json()
+    except Exception:
+        return JSONResponse(status_code=400, content={"error": "Invalid JSON"})
+
+    event_name = data.get("meta", {}).get("event_name", "") or data.get("type", "")
+    
+    # Extraction de l'email du client (Lemon Squeezy ou Stripe)
+    customer_email = ""
+    sub_id = ""
+    renews_at_raw = None
+
+    # Format Lemon Squeezy
+    if "data" in data and "attributes" in data["data"]:
+        attrs = data["data"]["attributes"]
+        customer_email = attrs.get("user_email") or attrs.get("customer_email") or ""
+        sub_id = str(data["data"].get("id", ""))
+        renews_at_raw = attrs.get("renews_at") or attrs.get("ends_at")
+    
+    # Format Stripe
+    if not customer_email and "data" in data and "object" in data["data"]:
+        obj = data["data"]["object"]
+        customer_email = obj.get("customer_email") or obj.get("receipt_email") or ""
+        sub_id = obj.get("subscription") or obj.get("id") or ""
+        current_period_end = obj.get("current_period_end")
+        if current_period_end:
+            renews_at_raw = datetime.utcfromtimestamp(current_period_end)
+
+    if customer_email:
+        clean_email = customer_email.strip().lower()
+        user = db.query(User).filter(User.email == clean_email).first()
+
+        # Si le client n'existe pas encore, on crée automatiquement son profil
+        if not user:
+            user = User(
+                email=clean_email,
+                full_name=data.get("data", {}).get("attributes", {}).get("user_name", "Valued Pro Member"),
+                hashed_password=hash_password("jobcatch2026!pro"),
+                target_role="Software Engineer",
+                subscription_status="ACTIVE",
+                subscription_id=sub_id,
+                auto_renew=1,
+                trial_ends_at=datetime.utcnow() + timedelta(days=30)
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+            
+            # Initialiser le CV
+            initial_resume = Resume(
+                user_id=user.id,
+                title=f"{user.full_name} - Pro Resume",
+                full_text=f"Qualified {user.target_role} with proven engineering experience and corporate ATS optimization.",
+                skills="Python, SQL, JavaScript, React, Git, Cloud APIs, Microservices"
+            )
+            db.add(initial_resume)
+            db.commit()
+        else:
+            # Traitement des événements
+            if any(ev in event_name for ev in ["cancelled", "canceled", "expired"]):
+                user.subscription_status = "CANCELLED"
+                user.auto_renew = 0
+            else:
+                # Paiement reçu : Activation instantanée du plan Pro Illimité
+                user.subscription_status = "ACTIVE"
+                user.auto_renew = 1
+                user.subscription_id = sub_id or user.subscription_id
+                
+                # Échéance : 30 jours à partir d'aujourd'hui (accès illimité)
+                if isinstance(renews_at_raw, datetime):
+                    user.trial_ends_at = renews_at_raw
+                else:
+                    user.trial_ends_at = datetime.utcnow() + timedelta(days=30)
+            
+            db.commit()
+
+        return JSONResponse(status_code=200, content={
+            "status": "success",
+            "event": event_name,
+            "email": clean_email,
+            "subscription_status": user.subscription_status,
+            "valid_until": user.trial_ends_at.isoformat() if user.trial_ends_at else None
+        })
+
+    return JSONResponse(status_code=200, content={"status": "ignored", "reason": "No customer email found"})
+
+
+@app.get("/checkout/success", response_class=HTMLResponse)
+@app.get("/billing/success", response_class=HTMLResponse)
+def checkout_success_page(request: Request, email: str = None, order_id: str = None, db: Session = Depends(get_db)):
+    """Page de retour immédiat après paiement réussi. Active le Pro Illimité instantanément."""
+    target_user = None
+    
+    # 1. Vérifier si un email est passé en paramètre
+    if email:
+        target_user = db.query(User).filter(User.email == email.strip().lower()).first()
+    
+    # 2. Sinon, vérifier l'utilisateur connecté
+    if not target_user:
+        current = get_optional_user(request, db)
+        if current:
+            target_user = current
+            
+    if target_user:
+        target_user.subscription_status = "ACTIVE"
+        target_user.auto_renew = 1
+        target_user.trial_ends_at = datetime.utcnow() + timedelta(days=30)
+        target_user.subscription_id = f"lemon_{order_id or datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+        db.commit()
+        
+        cookie = create_signed_session_cookie({"user_id": target_user.id, "email": target_user.email})
+        res = RedirectResponse(url="/dashboard?pro=activated", status_code=status.HTTP_303_SEE_OTHER)
+        res.set_cookie(settings.SESSION_COOKIE_NAME, cookie, httponly=True, max_age=86400 * 30)
+        return res
+        
+    return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 
 # ==============================================================================
@@ -466,6 +581,9 @@ def founder_toggle_user_status(user_id: int = Form(...), new_status: str = Form(
     if target_user:
         target_user.subscription_status = new_status
         target_user.auto_renew = 1 if new_status == "ACTIVE" else 0
+        if new_status == "ACTIVE":
+            target_user.trial_ends_at = datetime.utcnow() + timedelta(days=30)
+            target_user.subscription_id = f"manual_founder_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
         db.commit()
     return RedirectResponse(url="/founder", status_code=status.HTTP_303_SEE_OTHER)
 

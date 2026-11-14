@@ -27,7 +27,21 @@
     </div>
 
     <!-- Trial & Billing Status Notification Banner -->
-    {% if user.subscription_status == 'TRIAL' %}
+    {% if user.subscription_status == 'ACTIVE' %}
+    <div class="mt-4 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-emerald-500/15 via-emerald-500/10 to-slate-900 px-4 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-emerald-200 gap-2 shadow-lg shadow-emerald-500/10">
+        <div class="flex items-center space-x-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>
+                <strong class="text-white text-sm">👑 Unlimited Pro Access Active.</strong> Your account is fully unlocked with unlimited ATS tailoring and auto-apply submissions until <strong>{{ user.trial_ends_at.strftime('%B %d, %Y') if user.trial_ends_at else 'Active' }}</strong>.
+            </span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                VIP PRO MEMBER
+            </span>
+        </div>
+    </div>
+    {% elif user.subscription_status == 'TRIAL' %}
     <div class="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-yellow-200 gap-2">
         <div class="flex items-center space-x-2.5">
             <span class="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></span>
