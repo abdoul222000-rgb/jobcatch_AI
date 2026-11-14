@@ -427,33 +427,17 @@ async def payment_webhook(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/checkout/success", response_class=HTMLResponse)
 @app.get("/billing/success", response_class=HTMLResponse)
-def checkout_success_page(request: Request, email: str = None, order_id: str = None, db: Session = Depends(get_db)):
-    """Page de retour immédiat après paiement réussi. Active le Pro Illimité instantanément."""
-    target_user = None
+def checkout_success_page(request: Request, db: Session = Depends(get_db)):
+    """Page de retour sécurisée après passage par Lemon Squeezy.
+       L'activation réelle est strictement vérifiée par le Webhook officiel de Lemon Squeezy."""
+    user = get_optional_user(request, db)
     
-    # 1. Vérifier si un email est passé en paramètre
-    if email:
-        target_user = db.query(User).filter(User.email == email.strip().lower()).first()
-    
-    # 2. Sinon, vérifier l'utilisateur connecté
-    if not target_user:
-        current = get_optional_user(request, db)
-        if current:
-            target_user = current
-            
-    if target_user:
-        target_user.subscription_status = "ACTIVE"
-        target_user.auto_renew = 1
-        target_user.trial_ends_at = datetime.utcnow() + timedelta(days=30)
-        target_user.subscription_id = f"lemon_{order_id or datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
-        db.commit()
+    # Si l'utilisateur est déjà passé par le webhook officiel, son statut est déjà ACTIVE
+    # S'il ne l'est pas encore, le webhook serveur-à-serveur est en cours de traitement
+    if user:
+        return RedirectResponse(url="/dashboard?payment=processing", status_code=status.HTTP_303_SEE_OTHER)
         
-        cookie = create_signed_session_cookie({"user_id": target_user.id, "email": target_user.email})
-        res = RedirectResponse(url="/dashboard?pro=activated", status_code=status.HTTP_303_SEE_OTHER)
-        res.set_cookie(settings.SESSION_COOKIE_NAME, cookie, httponly=True, max_age=86400 * 30)
-        return res
-        
-    return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 
 
 # ==============================================================================
