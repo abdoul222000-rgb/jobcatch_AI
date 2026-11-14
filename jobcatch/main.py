@@ -124,10 +124,11 @@ def login_submit(request: Request, email: str = Form(...), password: str = Form(
 
 
 @app.get("/register", response_class=HTMLResponse)
-def register_page(request: Request, user = Depends(get_optional_user)):
+def register_page(request: Request, vip: str = None, user = Depends(get_optional_user)):
     if user:
         return RedirectResponse(url="/dashboard")
-    return templates.TemplateResponse(request=request, name="auth/register.html", context={"user": None, "error": None})
+    is_vip = True  # Activé pour tous les visiteurs ce week-end pour capturer 100% des leads !
+    return templates.TemplateResponse(request=request, name="auth/register.html", context={"user": None, "error": None, "vip": is_vip})
 
 
 @app.post("/register", response_class=HTMLResponse)
@@ -269,12 +270,16 @@ def billing_page(request: Request, user: User = Depends(get_current_user)):
 
 @app.get("/checkout")
 def checkout_redirect(request: Request, db: Session = Depends(get_db), user = Depends(get_optional_user)):
-    """Redirige les candidats vers le checkout sécurisé Lemon Squeezy ($39/mo avec 3 jours d'essai gratuit)"""
+    """Redirige les candidats : accès VIP immédiat sans carte pendant le pré-lancement ou Lemon Squeezy si abonné"""
+    if not user:
+        log_page_visit(request, db, custom_path="/checkout (Free VIP Trial Started)")
+        # Accès immédiat pour ne perdre aucun client ce week-end !
+        return RedirectResponse(url="/register?vip=1", status_code=status.HTTP_303_SEE_OTHER)
+    
     log_page_visit(request, db, custom_path="/checkout (LemonSqueezy)")
     url = settings.LEMON_SQUEEZY_CHECKOUT_URL
-    if user and user.email:
-        sep = "&" if "?" in url else "?"
-        url = f"{url}{sep}checkout[email]={user.email}&checkout[name]={user.full_name}"
+    sep = "&" if "?" in url else "?"
+    url = f"{url}{sep}checkout[email]={user.email}&checkout[name]={user.full_name}"
     return RedirectResponse(url=url, status_code=status.HTTP_303_SEE_OTHER)
 
 
