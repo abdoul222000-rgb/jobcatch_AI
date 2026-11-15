@@ -118,6 +118,10 @@
         </div>
 
         <div class="flex items-center space-x-2">
+            <a href="/founder/facebook-radar/scan" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold text-xs shadow-md transition flex items-center space-x-1.5">
+                <i class="fa-brands fa-facebook mr-1"></i>
+                <span>Scanner Facebook (CH 🇨🇭 & US 🇺🇸)</span>
+            </a>
             <a href="/founder/radar/scan" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs shadow-md transition flex items-center space-x-1.5">
                 <i class="fa-solid fa-radar mr-1"></i>
                 <span>Scanner Reddit (Radar)</span>
@@ -219,6 +223,196 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- 🌐 FACEBOOK GROWTH RADAR (PILOTE AUTOMATIQUE USA & SUISSE 🇨🇭 🇺🇸) -->
+    <div id="facebook-radar" class="mt-8 rounded-2xl border border-sky-500/30 bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 p-6 shadow-xl">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-slate-800 gap-3">
+            <div>
+                <h2 class="text-lg font-black text-white flex items-center gap-2">
+                    <span class="text-sky-400"><i class="fa-brands fa-facebook"></i></span>
+                    <span>Facebook Growth Radar</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500/10 text-sky-400 border border-sky-500/30">Suisse 🇨🇭 & USA 🇺🇸</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">
+                    Prospectez les groupes Facebook clés en Suisse Romande et USA Tech. Commentaires & DMs chirurgicaux à fort taux de conversion prêts à copier !
+                </p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="/founder/facebook-radar/scan" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-lg shadow-sky-600/30">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>Actualiser le Radar FB</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Raccourcis rapides des Groupes Cibles -->
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1">Groupes Cibles :</span>
+            <a href="https://www.facebook.com/groups/712398642237937" target="_blank" class="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-bold transition flex items-center space-x-1">
+                <span>🇨🇭 CHOffres d'emplois Suisse Romande</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+            </a>
+            <a href="https://www.facebook.com/groups/emploisuisseromande" target="_blank" class="px-2.5 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-bold transition flex items-center space-x-1">
+                <span>🇨🇭 Emploi & Recrutement Suisse</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+            </a>
+            <a href="https://www.facebook.com/groups/IT.Software.Engineer.Jobs" target="_blank" class="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold transition flex items-center space-x-1">
+                <span>🇺🇸 Software Engineer Jobs IT</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+            </a>
+            <a href="https://www.facebook.com/groups/techjobsusa" target="_blank" class="px-2.5 py-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs font-bold transition flex items-center space-x-1">
+                <span>🇺🇸 Tech & Software Jobs USA</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-1"></i>
+            </a>
+        </div>
+
+        <!-- Générateur Express de Réponse Facebook (Coller un Post) -->
+        <div class="mt-5 p-4 rounded-xl border border-sky-500/20 bg-slate-950/60">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-black text-sky-300 flex items-center gap-1.5 uppercase tracking-wide">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Générateur Express de Réponse Facebook (Coller un post ou un CV vu)</span>
+                </span>
+            </div>
+            <form action="/founder/facebook-radar/generate-custom" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nom du Candidat</label>
+                    <input type="text" name="candidate_name" placeholder="Ex: Anastasiia, Marc..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Marché Cible</label>
+                    <select name="target_market" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                        <option value="CH">🇨🇭 Suisse Romande (Jobup.ch, Indeed CH)</option>
+                        <option value="US">🇺🇸 USA Tech (Workday, Greenhouse)</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Extrait du Post / Problème constaté</label>
+                    <div class="flex gap-2">
+                        <input type="text" name="post_snippet" required placeholder="Ex: Cherche poste hôtellerie à Genève, CV 2 colonnes partagé" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                        <button type="submit" class="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition flex items-center space-x-1 whitespace-nowrap shadow-md shadow-sky-600/30">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>
+                            <span>Générer Pitch</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des opportunités Facebook -->
+        <div class="mt-6 space-y-4">
+            {% if facebook_leads %}
+                {% for fb in facebook_leads %}
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-950/80 hover:border-sky-500/40 transition">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2">
+                            {% if fb.target_market == 'CH' %}
+                            <span class="px-2 py-0.5 rounded-md bg-red-500/10 text-red-400 border border-red-500/20 text-[11px] font-bold">
+                                🇨🇭 Suisse Romande
+                            </span>
+                            {% else %}
+                            <span class="px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[11px] font-bold">
+                                🇺🇸 USA Tech
+                            </span>
+                            {% endif %}
+                            <span class="text-xs font-bold text-white">{{ fb.candidate_name }}</span>
+                            <span class="text-xs text-slate-400">dans <strong>{{ fb.group_name }}</strong></span>
+                        </div>
+
+                        <div class="flex items-center space-x-2">
+                            {% if fb.status == 'COPIED' %}
+                            <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">
+                                ✓ Déjà Contacté
+                            </span>
+                            {% endif %}
+                            <a href="{{ fb.group_url }}" target="_blank" class="text-xs text-sky-400 hover:text-sky-300 font-bold inline-flex items-center space-x-1 bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20 transition">
+                                <span>Ouvrir le Groupe Facebook ↗</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Problème détecté -->
+                    <div class="mt-2 text-xs text-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                        <span><strong>Problème détecté :</strong> {{ fb.detected_issue }}</span>
+                    </div>
+
+                    {% if fb.post_snippet %}
+                    <p class="text-xs text-slate-400 mt-1 italic border-l-2 border-slate-700 pl-2">
+                        "{{ fb.post_snippet }}"
+                    </p>
+                    {% endif %}
+
+                    <!-- 2 Boîtes d'action : Commentaire Public + Message Privé (DM) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                        <!-- Boîte 1 : Commentaire Public -->
+                        <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-sky-400">
+                                    <i class="fa-solid fa-comment-dots mr-1"></i>1. Commentaire Public :
+                                </span>
+                                <button onclick="copyFBText('fb-comment-{{ fb.id }}', '{{ fb.id }}', this)" 
+                                        class="px-2.5 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-bold flex items-center space-x-1 transition shadow">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span>Copier Commentaire</span>
+                                </button>
+                            </div>
+                            <pre id="fb-comment-{{ fb.id }}" class="text-xs text-slate-200 whitespace-pre-wrap font-sans select-all leading-relaxed">{{ fb.suggested_comment }}</pre>
+                        </div>
+
+                        <!-- Boîte 2 : Message Privé (DM) -->
+                        <div class="bg-slate-900 rounded-xl p-3 border border-slate-800">
+                            <div class="flex items-center justify-between mb-1.5">
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400">
+                                    <i class="fa-solid fa-paper-plane mr-1"></i>2. Message Privé (DM) :
+                                </span>
+                                <button onclick="copyFBText('fb-dm-{{ fb.id }}', '{{ fb.id }}', this)" 
+                                        class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold flex items-center space-x-1 transition shadow">
+                                    <i class="fa-regular fa-copy"></i>
+                                    <span>Copier DM</span>
+                                </button>
+                            </div>
+                            <pre id="fb-dm-{{ fb.id }}" class="text-xs text-slate-200 whitespace-pre-wrap font-sans select-all leading-relaxed">{{ fb.suggested_dm }}</pre>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="p-8 text-center bg-slate-950/60 rounded-xl border border-slate-800/80">
+                    <i class="fa-brands fa-facebook text-3xl text-sky-400/60 mb-2"></i>
+                    <div class="text-sm font-bold text-white">Le Radar Facebook est prêt</div>
+                    <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+                        Cliquez ci-dessous pour charger les opportunités ciblées sur les groupes Suisse Romande et USA Tech.
+                    </p>
+                    <a href="/founder/facebook-radar/scan" class="mt-4 inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-lg shadow-sky-600/30">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                        <span>Activer le Radar Facebook</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+    function copyFBText(elementId, leadId, buttonElem) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHTML = buttonElem.innerHTML;
+            buttonElem.innerHTML = '<i class="fa-solid fa-check text-emerald-300 mr-1"></i><span>Copié !</span>';
+            const oldBg = buttonElem.classList.contains('bg-purple-600') ? 'bg-purple-600' : 'bg-sky-600';
+            buttonElem.classList.remove(oldBg);
+            buttonElem.classList.add('bg-emerald-600');
+            
+            setTimeout(() => {
+                buttonElem.innerHTML = originalHTML;
+                buttonElem.classList.remove('bg-emerald-600');
+                buttonElem.classList.add(oldBg);
+            }, 2500);
+
+            fetch('/founder/facebook-radar/mark-copied/' + leadId, { method: 'POST' }).catch(() => {});
+        });
+    }
+    </script>
 
     <script>
     function copyReply(elementId, leadId, buttonElem) {

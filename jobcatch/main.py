@@ -7,7 +7,7 @@ import os
 import hashlib
 
 from .config import settings
-from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, RadarLead, SessionLocal, hash_password, verify_password
+from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, RadarLead, FacebookLead, SessionLocal, hash_password, verify_password
 from .security import (
     create_signed_session_cookie, 
     verify_signed_session_cookie,
@@ -15,6 +15,7 @@ from .security import (
 )
 from .services.ai_tailor import tailor_resume_for_job
 from .radar import scan_reddit_and_store
+from .facebook_radar import scan_facebook_and_store, generate_facebook_tailored_pitch, FACEBOOK_TARGET_GROUPS
 
 app = FastAPI(title="JobCatch AI - Auto-Apply & Resume Tailorer for US Job Seekers")
 
@@ -480,6 +481,15 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
     # 4. Opportunités chaudes détectées par le Radar Reddit
     radar_leads = db.query(RadarLead).order_by(RadarLead.created_at.desc()).limit(15).all()
 
+    # 5. Opportunités chaudes détectées par le Radar Facebook (USA & Suisse 🇨🇭 🇺🇸)
+    facebook_leads = db.query(FacebookLead).order_by(FacebookLead.created_at.desc()).limit(20).all()
+    if not facebook_leads:
+        try:
+            scan_facebook_and_store(db_session=db)
+            facebook_leads = db.query(FacebookLead).order_by(FacebookLead.created_at.desc()).limit(20).all()
+        except Exception:
+            pass
+
     return templates.TemplateResponse(
         request=request,
         name="founder/dashboard.html",
@@ -493,6 +503,8 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
             "visits_today": visits_today,
             "recent_visits": recent_visits,
             "radar_leads": radar_leads,
+            "facebook_leads": facebook_leads,
+            "facebook_groups": FACEBOOK_TARGET_GROUPS,
             "mrr": mrr
         }
     )
@@ -513,7 +525,7 @@ def trigger_radar_scan(request: Request, db: Session = Depends(get_db)):
 
 @app.post("/founder/radar/mark-copied/{lead_id}")
 def mark_radar_lead_copied(lead_id: int, request: Request, db: Session = Depends(get_db)):
-    """Marque une réponse comme copiée/postée"""
+    """Marque une réponse Reddit comme copiée/postée"""
     founder = get_current_founder(request, db)
     if not founder:
         raise HTTPException(status_code=403, detail="Non autorisé")
@@ -522,6 +534,74 @@ def mark_radar_lead_copied(lead_id: int, request: Request, db: Session = Depends
         lead.status = "COPIED"
         db.commit()
     return {"status": "ok", "lead_id": lead_id}
+
+
+@app.get("/founder/facebook-radar/scan")
+def trigger_facebook_radar_scan(request: Request, db: Session = Depends(get_db)):
+    """Déclenche l'actualisation du Radar Facebook (USA & Suisse 🇨🇭 🇺🇸)"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        return RedirectResponse(url="/founder/login", status_code=status.HTTP_303_SEE_OTHER)
+    try:
+        scan_facebook_and_store(db_session=db)
+    except Exception:
+        pass
+    return RedirectResponse(url="/founder#facebook-radar", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@app.post("/founder/facebook-radar/mark-copied/{lead_id}")
+def mark_facebook_lead_copied(lead_id: int, request: Request, db: Session = Depends(get_db)):
+    """Marque une réponse Facebook (commentaire ou DM) comme copiée"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    lead = db.query(FacebookLead).filter(FacebookLead.id == lead_id).first()
+    if lead:
+        lead.status = "COPIED"
+        db.commit()
+    return {"status": "ok", "lead_id": lead_id}
+
+
+@app.post("/founder/facebook-radar/generate-custom")
+def generate_custom_facebook_lead(
+    request: Request,
+    candidate_name: str = Form(""),
+    target_market: str = Form("CH"),
+    post_snippet: str = Form(...),
+    group_name: str = Form(""),
+    group_url: str = Form(""),
+    db: Session = Depends(get_db)
+):
+    """Générateur instantané de réponse chirurgicale Facebook à partir d'un post copié par le fondateur"""
+    founder = get_current_founder(request, db)
+    if not founder:
+        raise HTTPException(status_code=403, detail="Non autorisé")
+    
+    pitch = generate_facebook_tailored_pitch(
+        candidate_name=candidate_name,
+        target_market=target_market,
+        post_snippet=post_snippet
+    )
+    
+    post_id = f"custom_fb_{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}"
+    grp_name = group_name if group_name else ("CHOffres d'emplois CHsuisse CH romande CH" if target_market == "CH" else "Software Engineer Jobs IT")
+    grp_url = group_url if group_url else ("https://www.facebook.com/groups/712398642237937" if target_market == "CH" else "https://www.facebook.com/groups/IT.Software.Engineer.Jobs")
+    
+    new_lead = FacebookLead(
+        post_id=post_id,
+        group_name=grp_name,
+        group_url=grp_url,
+        target_market=target_market,
+        candidate_name=candidate_name or "Candidat",
+        post_snippet=post_snippet,
+        detected_issue=pitch["issue"],
+        suggested_comment=pitch["suggested_comment"],
+        suggested_dm=pitch["suggested_dm"],
+        status="NEW"
+    )
+    db.add(new_lead)
+    db.commit()
+    return RedirectResponse(url="/founder#facebook-radar", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/founder/login", response_class=HTMLResponse)
