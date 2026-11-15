@@ -277,7 +277,7 @@
             <form action="/founder/facebook-radar/generate-custom" method="POST" class="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nom du Candidat</label>
-                    <input type="text" name="candidate_name" placeholder="Ex: Anastasiia, Marc..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                    <input type="text" name="candidate_name" placeholder="Ex: Anastasiia, Rahul..." class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Marché Cible</label>
@@ -287,12 +287,16 @@
                     </select>
                 </div>
                 <div class="md:col-span-2">
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Lien Direct du Post Facebook (optionnel)</label>
+                    <input type="url" name="post_url" placeholder="https://www.facebook.com/groups/.../posts/... (ou laisser vide)" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div class="md:col-span-4">
                     <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Extrait du Post / Problème constaté</label>
                     <div class="flex gap-2">
                         <input type="text" name="post_snippet" required placeholder="Ex: Cherche poste hôtellerie à Genève, CV 2 colonnes partagé" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-sky-500">
                         <button type="submit" class="px-4 py-1.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition flex items-center space-x-1 whitespace-nowrap shadow-md shadow-sky-600/30">
                             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>
-                            <span>Générer Pitch</span>
+                            <span>Générer Pitch & Enregistrer</span>
                         </button>
                     </div>
                 </div>
@@ -325,8 +329,9 @@
                                 ✓ Déjà Contacté
                             </span>
                             {% endif %}
-                            <a href="{{ fb.group_url }}" target="_blank" class="text-xs text-sky-400 hover:text-sky-300 font-bold inline-flex items-center space-x-1 bg-sky-500/10 px-2.5 py-1 rounded-lg border border-sky-500/20 transition">
-                                <span>Ouvrir le Groupe Facebook ↗</span>
+                            <a href="{{ fb.post_url or fb.group_url }}" target="_blank" class="text-xs text-sky-400 hover:text-sky-300 font-bold inline-flex items-center space-x-1.5 bg-sky-500/10 hover:bg-sky-500/20 px-3 py-1.5 rounded-lg border border-sky-500/30 hover:border-sky-500/60 transition shadow-sm">
+                                <i class="fa-brands fa-facebook text-sky-400"></i>
+                                <span>Ouvrir le Post Direct ↗</span>
                             </a>
                         </div>
                     </div>

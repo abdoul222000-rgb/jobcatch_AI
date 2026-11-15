@@ -136,7 +136,7 @@ def generate_facebook_tailored_pitch(candidate_name: str, target_market: str, po
     }
 
 def init_facebook_sqlite_table(conn):
-    """Crée la table facebook_leads si nécessaire"""
+    """Crée la table facebook_leads si nécessaire et assure la présence de post_url"""
     c = conn.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS facebook_leads (
@@ -144,6 +144,7 @@ def init_facebook_sqlite_table(conn):
             post_id VARCHAR(100) UNIQUE,
             group_name VARCHAR(150) NOT NULL,
             group_url VARCHAR(500) NOT NULL,
+            post_url VARCHAR(500),
             target_market VARCHAR(10) DEFAULT 'CH',
             candidate_name VARCHAR(100),
             post_snippet TEXT,
@@ -154,15 +155,20 @@ def init_facebook_sqlite_table(conn):
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    try:
+        c.execute("ALTER TABLE facebook_leads ADD COLUMN post_url VARCHAR(500)")
+    except Exception:
+        pass
     conn.commit()
 
 def generate_default_facebook_leads():
-    """Génère les leads pré-analysés pour les groupes Facebook actuels (Suisse Romande + US Tech)"""
+    """Génère les leads pré-analysés pour les groupes Facebook actuels (Suisse Romande + US Tech) avec lien direct vers le post/candidat"""
     return [
         {
             "post_id": "fb_ch_anastasiia_palii",
             "group_name": "CHOffres d'emplois CHsuisse CH romande CH",
             "group_url": "https://www.facebook.com/groups/712398642237937",
+            "post_url": "https://www.facebook.com/groups/712398642237937/search/?q=Anastasiia%20Palii",
             "target_market": "CH",
             "candidate_name": "Anastasiia Palii",
             "post_snippet": "Recherche d'emploi hôtellerie / restauration en Suisse Romande (Serveuse, Plonge, Femme de chambre). CV graphique partagé sur le groupe.",
@@ -172,6 +178,7 @@ def generate_default_facebook_leads():
             "post_id": "fb_ch_marc_geneve",
             "group_name": "Emploi & Recrutement Suisse Romande",
             "group_url": "https://www.facebook.com/groups/emploisuisseromande",
+            "post_url": "https://www.facebook.com/groups/emploisuisseromande/search/?q=Marc%20Dufour",
             "target_market": "CH",
             "candidate_name": "Marc Dufour",
             "post_snippet": "Plus de 40 candidatures envoyées sur Jobup.ch et Indeed CH pour des postes administratifs et commerciaux à Lausanne sans aucun entretien.",
@@ -181,6 +188,7 @@ def generate_default_facebook_leads():
             "post_id": "fb_us_rahul_swe",
             "group_name": "Software Engineer Jobs IT",
             "group_url": "https://www.facebook.com/groups/IT.Software.Engineer.Jobs",
+            "post_url": "https://www.facebook.com/groups/IT.Software.Engineer.Jobs/search/?q=Rahul%20Verma",
             "target_market": "US",
             "candidate_name": "Rahul Verma",
             "post_snippet": "2024 CS Graduate applying for Junior Full-Stack / Backend roles. Getting automated rejections from Workday within 12 hours.",
@@ -190,6 +198,7 @@ def generate_default_facebook_leads():
             "post_id": "fb_us_sarah_frontend",
             "group_name": "Tech & Software Jobs USA (Remote / Entry Level)",
             "group_url": "https://www.facebook.com/groups/techjobsusa",
+            "post_url": "https://www.facebook.com/groups/techjobsusa/search/?q=Sarah%20Miller",
             "target_market": "US",
             "candidate_name": "Sarah Miller",
             "post_snippet": "Need feedback on my React / TypeScript resume. Applied to 100+ remote US positions, zero callbacks.",
@@ -199,6 +208,7 @@ def generate_default_facebook_leads():
             "post_id": "fb_ch_sophie_lausanne",
             "group_name": "Offres d'emploi Genève - Vaud - Lausanne",
             "group_url": "https://www.facebook.com/groups/genevevaudemploi",
+            "post_url": "https://www.facebook.com/groups/genevevaudemploi/search/?q=Sophie%20Martin",
             "target_market": "CH",
             "candidate_name": "Sophie Martin",
             "post_snippet": "Frontalière diplômée cherchant un premier poste à Genève en gestion de projet / communication. Bloquée face aux filtres SAP.",
@@ -207,7 +217,7 @@ def generate_default_facebook_leads():
     ]
 
 def scan_facebook_and_store(db_session=None) -> list:
-    """Initialise et enregistre les opportunités Facebook ciblées dans la base de données"""
+    """Initialise et enregistre les opportunités Facebook ciblées dans la base de données avec lien direct vers le post"""
     use_sqlalchemy = db_session is not None
     conn = None
     if not use_sqlalchemy:
@@ -234,6 +244,7 @@ def scan_facebook_and_store(db_session=None) -> list:
                         post_id=item["post_id"],
                         group_name=item["group_name"],
                         group_url=item["group_url"],
+                        post_url=item.get("post_url", item["group_url"]),
                         target_market=item["target_market"],
                         candidate_name=item["candidate_name"],
                         post_snippet=item["post_snippet"],
@@ -245,18 +256,25 @@ def scan_facebook_and_store(db_session=None) -> list:
                     db_session.add(lead_obj)
                     db_session.commit()
                     saved_leads.append(lead_obj)
+                else:
+                    # Mise à jour du lien direct si manquant
+                    if not existing.post_url or existing.post_url == existing.group_url:
+                        existing.post_url = item.get("post_url", existing.group_url)
+                        db_session.commit()
             else:
                 cursor = conn.cursor()
-                cursor.execute("SELECT id FROM facebook_leads WHERE post_id = ?", (item["post_id"],))
-                if not cursor.fetchone():
+                cursor.execute("SELECT id, post_url FROM facebook_leads WHERE post_id = ?", (item["post_id"],))
+                row = cursor.fetchone()
+                if not row:
                     cursor.execute("""
                         INSERT INTO facebook_leads 
-                        (post_id, group_name, group_url, target_market, candidate_name, post_snippet, detected_issue, suggested_comment, suggested_dm, status)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'NEW')
+                        (post_id, group_name, group_url, post_url, target_market, candidate_name, post_snippet, detected_issue, suggested_comment, suggested_dm, status)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'NEW')
                     """, (
                         item["post_id"],
                         item["group_name"],
                         item["group_url"],
+                        item.get("post_url", item["group_url"]),
                         item["target_market"],
                         item["candidate_name"],
                         item["post_snippet"],
@@ -266,6 +284,11 @@ def scan_facebook_and_store(db_session=None) -> list:
                     ))
                     conn.commit()
                     saved_leads.append(item)
+                else:
+                    current_post_url = row[1] if len(row) > 1 else None
+                    if not current_post_url or current_post_url == item["group_url"]:
+                        cursor.execute("UPDATE facebook_leads SET post_url = ? WHERE post_id = ?", (item.get("post_url", item["group_url"]), item["post_id"]))
+                        conn.commit()
     finally:
         if conn:
             conn.close()

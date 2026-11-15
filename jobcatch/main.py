@@ -570,9 +570,10 @@ def generate_custom_facebook_lead(
     post_snippet: str = Form(...),
     group_name: str = Form(""),
     group_url: str = Form(""),
+    post_url: str = Form(""),
     db: Session = Depends(get_db)
 ):
-    """Générateur instantané de réponse chirurgicale Facebook à partir d'un post copié par le fondateur"""
+    """Générateur instantané de réponse chirurgicale Facebook à partir d'un post copié par le fondateur avec lien direct vers le post"""
     founder = get_current_founder(request, db)
     if not founder:
         raise HTTPException(status_code=403, detail="Non autorisé")
@@ -587,10 +588,18 @@ def generate_custom_facebook_lead(
     grp_name = group_name if group_name else ("CHOffres d'emplois CHsuisse CH romande CH" if target_market == "CH" else "Software Engineer Jobs IT")
     grp_url = group_url if group_url else ("https://www.facebook.com/groups/712398642237937" if target_market == "CH" else "https://www.facebook.com/groups/IT.Software.Engineer.Jobs")
     
+    import urllib.parse
+    clean_post_url = post_url.strip() if post_url and post_url.strip() else ""
+    if not clean_post_url and candidate_name:
+        clean_post_url = f"{grp_url}/search/?q={urllib.parse.quote(candidate_name.strip())}"
+    elif not clean_post_url:
+        clean_post_url = grp_url
+
     new_lead = FacebookLead(
         post_id=post_id,
         group_name=grp_name,
         group_url=grp_url,
+        post_url=clean_post_url,
         target_market=target_market,
         candidate_name=candidate_name or "Candidat",
         post_snippet=post_snippet,

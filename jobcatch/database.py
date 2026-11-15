@@ -132,6 +132,7 @@ class FacebookLead(Base):
     post_id = Column(String(100), unique=True, index=True)
     group_name = Column(String(150), nullable=False)
     group_url = Column(String(500), nullable=False)
+    post_url = Column(String(500), nullable=True)  # Lien direct vers le post ou la recherche du candidat
     target_market = Column(String(10), default="CH")  # "CH" (Suisse) ou "US" (USA)
     candidate_name = Column(String(100), nullable=True)
     post_snippet = Column(Text, nullable=True)
