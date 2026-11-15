@@ -75,30 +75,57 @@ def tailor_resume_for_job(resume_text: str, job_title: str, company_name: str, j
     clean_role = job_title.strip() if job_title else "Software Professional"
     clean_company = company_name.strip() if company_name else "the company"
     
-    tailored_summary = (
-        f"Results-driven {clean_role} with proven hands-on expertise building scalable solutions, "
-        f"streamlining deployment workflows, and collaborating cross-functionally. Dedicated to driving "
-        f"measurable business impact and technical excellence for the engineering team at {clean_company}."
-    )
-    
-    bullet_points = [
-        f"• Architected and shipped core features directly aligned with {clean_role} requirements, accelerating release velocity by 35%.",
-        f"• Spearheaded automated testing and code quality standards, reducing production incident rates by 40% across cross-functional sprints.",
-        f"• Partnered directly with product and operations teams to optimize system performance, reducing API response latency by 28%."
-    ]
-    
-    cover_letter = (
-        f"Dear Hiring Team at {clean_company},\n\n"
-        f"I am writing to express my enthusiastic interest in the {clean_role} position. Having followed {clean_company}'s "
-        f"recent growth and industry innovations, I was immediately drawn to your mission of engineering high-impact, user-centric software.\n\n"
-        f"Throughout my background, I have consistently focused on building scalable, reliable architectures and translating complex "
-        f"business requirements into clean, maintainable code. My technical foundation and proactive problem-solving mindset position me "
-        f"to immediately contribute to your ongoing roadmap from day one.\n\n"
-        f"I welcome the opportunity to discuss how my skill set and passion align with {clean_company}'s vision. Thank you for your time "
-        f"and consideration.\n\n"
-        f"Sincerely,\n"
-        f"Applicant"
-    )
+    # Détection automatique Français (Suisse Romande) vs Anglais (USA / Suisse Alémanique)
+    combined_desc = (job_description + " " + job_title).lower()
+    is_french = any(w in combined_desc for w in [
+        "suisse", "genève", "geneva", "lausanne", "vaud", "poste", "compétences", 
+        "responsabilités", "expérience", "stage", "candidature", "gestion", "formation", "clientèle"
+    ])
+
+    if is_french:
+        tailored_summary = (
+            f"Professionnel qualifié en {clean_role}, doté d'une solide expertise technique et orienté résultats. "
+            f"Rigoureux et proactif, engagé à apporter une valeur mesurable, optimiser les processus et contribuer "
+            f"activement aux objectifs stratégiques et d'excellence de {clean_company} en Suisse."
+        )
+        bullet_points = [
+            f"• Conçu et déployé des solutions performantes adaptées aux exigences de {clean_role}, augmentant l'efficacité opérationnelle de 35%.",
+            f"• Piloté les standards de qualité et l'optimisation des flux de travail, réduisant les incidents de 40% sur les cycles d'activité.",
+            f"• Collaboré étroitement avec les équipes de {clean_company} pour dépasser les objectifs de performance et optimiser la satisfaction client/utilisateur."
+        ]
+        cover_letter = (
+            f"Madame, Monsieur, Équipe de Recrutement chez {clean_company},\n\n"
+            f"C'est avec un vif intérêt que je vous soumets ma candidature pour le poste de {clean_role}. "
+            f"Reconnaissant l'exigence d'excellence et la réputation de {clean_company} en Suisse, je souhaite mettre mon dynamisme et mes compétences à votre service.\n\n"
+            f"Fort de mon parcours, j'ai développé une solide rigueur méthodologique et une capacité éprouvée à transformer des objectifs ambitieux en réalisations mesurables. "
+            f"Mon esprit d'initiative et ma capacité d'adaptation me permettront d'être immédiatement opérationnel et d'apporter une valeur ajoutée concrète à vos équipes.\n\n"
+            f"Je serais ravi de vous exposer mes motivations de vive voix lors d'un entretien. En vous remerciant pour l'attention portée à ma candidature.\n\n"
+            f"Veuillez agréer, Madame, Monsieur, l'expression de mes salutations distinguées.\n\n"
+            f"Candidat JobCatch"
+        )
+    else:
+        tailored_summary = (
+            f"Results-driven {clean_role} with proven hands-on expertise building scalable solutions, "
+            f"streamlining deployment workflows, and collaborating cross-functionally. Dedicated to driving "
+            f"measurable business impact and technical excellence for the team at {clean_company}."
+        )
+        bullet_points = [
+            f"• Architected and shipped core features directly aligned with {clean_role} requirements, accelerating release velocity by 35%.",
+            f"• Spearheaded automated testing and quality standards, reducing production incident rates by 40% across cross-functional sprints.",
+            f"• Partnered directly with product and operations teams to optimize system performance, reducing API response latency by 28%."
+        ]
+        cover_letter = (
+            f"Dear Hiring Team at {clean_company},\n\n"
+            f"I am writing to express my enthusiastic interest in the {clean_role} position. Having followed {clean_company}'s "
+            f"growth and industry innovations across the US & Swiss markets, I was immediately drawn to your mission of engineering high-impact, user-centric software.\n\n"
+            f"Throughout my background, I have consistently focused on building scalable, reliable architectures and translating complex "
+            f"business requirements into clean, maintainable solutions. My technical foundation and proactive mindset position me "
+            f"to immediately contribute to your ongoing roadmap from day one.\n\n"
+            f"I welcome the opportunity to discuss how my skill set and passion align with {clean_company}'s vision. Thank you for your time "
+            f"and consideration.\n\n"
+            f"Sincerely,\n"
+            f"Applicant"
+        )
     
     return {
         "ats_score": boosted_score,
