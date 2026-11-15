@@ -125,19 +125,18 @@ class RadarLead(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
-class FacebookLead(Base):
-    __tablename__ = "facebook_leads"
+class XLead(Base):
+    __tablename__ = "x_leads"
 
     id = Column(Integer, primary_key=True, index=True)
-    post_id = Column(String(100), unique=True, index=True)
-    group_name = Column(String(150), nullable=False)
-    group_url = Column(String(500), nullable=False)
-    post_url = Column(String(500), nullable=True)  # Lien direct vers le post ou la recherche du candidat
-    target_market = Column(String(10), default="CH")  # "CH" (Suisse) ou "US" (USA)
-    candidate_name = Column(String(100), nullable=True)
-    post_snippet = Column(Text, nullable=True)
+    tweet_id = Column(String(100), unique=True, index=True)
+    author_handle = Column(String(100), nullable=False)
+    author_name = Column(String(100), nullable=True)
+    tweet_url = Column(String(500), nullable=False)
+    target_market = Column(String(10), default="US")  # "US" ou "CH"
+    tweet_text = Column(Text, nullable=True)
     detected_issue = Column(String(255), nullable=True)
-    suggested_comment = Column(Text, nullable=False)
+    suggested_reply = Column(Text, nullable=False)
     suggested_dm = Column(Text, nullable=True)
     status = Column(String(20), default="NEW")  # NEW, COPIED, ARCHIVED
     created_at = Column(DateTime, default=datetime.utcnow)

@@ -7,7 +7,7 @@ import os
 import hashlib
 
 from .config import settings
-from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, RadarLead, FacebookLead, SessionLocal, hash_password, verify_password
+from .database import engine, get_db, init_db, User, Resume, JobApplication, PageVisit, RadarLead, XLead, SessionLocal, hash_password, verify_password
 from .security import (
     create_signed_session_cookie, 
     verify_signed_session_cookie,
@@ -15,7 +15,7 @@ from .security import (
 )
 from .services.ai_tailor import tailor_resume_for_job
 from .radar import scan_reddit_and_store
-from .facebook_radar import scan_facebook_and_store, generate_facebook_tailored_pitch, FACEBOOK_TARGET_GROUPS
+from .x_radar import scan_x_and_store, generate_x_tailored_pitch, X_SEARCH_STREAMS
 
 app = FastAPI(title="JobCatch AI - Auto-Apply & Resume Tailorer for US Job Seekers")
 
@@ -481,12 +481,12 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
     # 4. Opportunités chaudes détectées par le Radar Reddit
     radar_leads = db.query(RadarLead).order_by(RadarLead.created_at.desc()).limit(15).all()
 
-    # 5. Opportunités chaudes détectées par le Radar Facebook (USA & Suisse 🇨🇭 🇺🇸)
-    facebook_leads = db.query(FacebookLead).order_by(FacebookLead.created_at.desc()).limit(20).all()
-    if not facebook_leads:
+    # 5. Opportunités chaudes détectées par le Radar X (Twitter USA 🇺🇸 & Suisse 🇨🇭)
+    x_leads = db.query(XLead).order_by(XLead.created_at.desc()).limit(20).all()
+    if not x_leads:
         try:
-            scan_facebook_and_store(db_session=db)
-            facebook_leads = db.query(FacebookLead).order_by(FacebookLead.created_at.desc()).limit(20).all()
+            scan_x_and_store(db_session=db)
+            x_leads = db.query(XLead).order_by(XLead.created_at.desc()).limit(20).all()
         except Exception:
             pass
 
@@ -503,8 +503,8 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
             "visits_today": visits_today,
             "recent_visits": recent_visits,
             "radar_leads": radar_leads,
-            "facebook_leads": facebook_leads,
-            "facebook_groups": FACEBOOK_TARGET_GROUPS,
+            "x_leads": x_leads,
+            "x_streams": X_SEARCH_STREAMS,
             "mrr": mrr
         }
     )
@@ -536,81 +536,76 @@ def mark_radar_lead_copied(lead_id: int, request: Request, db: Session = Depends
     return {"status": "ok", "lead_id": lead_id}
 
 
-@app.get("/founder/facebook-radar/scan")
-def trigger_facebook_radar_scan(request: Request, db: Session = Depends(get_db)):
-    """Déclenche l'actualisation du Radar Facebook (USA & Suisse 🇨🇭 🇺🇸)"""
+@app.get("/founder/x-radar/scan")
+def trigger_x_radar_scan(request: Request, db: Session = Depends(get_db)):
+    """Déclenche l'actualisation du Radar X (Twitter)"""
     founder = get_current_founder(request, db)
     if not founder:
         return RedirectResponse(url="/founder/login", status_code=status.HTTP_303_SEE_OTHER)
     try:
-        scan_facebook_and_store(db_session=db)
+        scan_x_and_store(db_session=db)
     except Exception:
         pass
-    return RedirectResponse(url="/founder#facebook-radar", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/founder#x-radar", status_code=status.HTTP_303_SEE_OTHER)
 
 
-@app.post("/founder/facebook-radar/mark-copied/{lead_id}")
-def mark_facebook_lead_copied(lead_id: int, request: Request, db: Session = Depends(get_db)):
-    """Marque une réponse Facebook (commentaire ou DM) comme copiée"""
+@app.post("/founder/x-radar/mark-copied/{lead_id}")
+def mark_x_lead_copied(lead_id: int, request: Request, db: Session = Depends(get_db)):
+    """Marque un tweet/DM X comme copié"""
     founder = get_current_founder(request, db)
     if not founder:
         raise HTTPException(status_code=403, detail="Non autorisé")
-    lead = db.query(FacebookLead).filter(FacebookLead.id == lead_id).first()
+    lead = db.query(XLead).filter(XLead.id == lead_id).first()
     if lead:
         lead.status = "COPIED"
         db.commit()
     return {"status": "ok", "lead_id": lead_id}
 
 
-@app.post("/founder/facebook-radar/generate-custom")
-def generate_custom_facebook_lead(
+@app.post("/founder/x-radar/generate-custom")
+def generate_custom_x_lead(
     request: Request,
-    candidate_name: str = Form(""),
-    target_market: str = Form("CH"),
-    post_snippet: str = Form(...),
-    group_name: str = Form(""),
-    group_url: str = Form(""),
-    post_url: str = Form(""),
+    author_handle: str = Form(""),
+    target_market: str = Form("US"),
+    tweet_text: str = Form(...),
+    tweet_url: str = Form(""),
     db: Session = Depends(get_db)
 ):
-    """Générateur instantané de réponse chirurgicale Facebook à partir d'un post copié par le fondateur avec lien direct vers le post"""
+    """Générateur instantané de réponse percutante pour X à partir d'un tweet copié par le fondateur"""
     founder = get_current_founder(request, db)
     if not founder:
         raise HTTPException(status_code=403, detail="Non autorisé")
     
-    pitch = generate_facebook_tailored_pitch(
-        candidate_name=candidate_name,
+    clean_handle = author_handle.strip()
+    if clean_handle and not clean_handle.startswith("@"):
+        clean_handle = f"@{clean_handle}"
+    elif not clean_handle:
+        clean_handle = "@candidate"
+
+    pitch = generate_x_tailored_pitch(
+        author_handle=clean_handle,
         target_market=target_market,
-        post_snippet=post_snippet
+        tweet_text=tweet_text
     )
     
-    post_id = f"custom_fb_{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}"
-    grp_name = group_name if group_name else ("CHOffres d'emplois CHsuisse CH romande CH" if target_market == "CH" else "Software Engineer Jobs IT")
-    grp_url = group_url if group_url else ("https://www.facebook.com/groups/712398642237937" if target_market == "CH" else "https://www.facebook.com/groups/IT.Software.Engineer.Jobs")
-    
-    import urllib.parse
-    clean_post_url = post_url.strip() if post_url and post_url.strip() else ""
-    if not clean_post_url and candidate_name:
-        clean_post_url = f"{grp_url}/search/?q={urllib.parse.quote(candidate_name.strip())}"
-    elif not clean_post_url:
-        clean_post_url = grp_url
+    post_id = f"custom_x_{datetime.utcnow().strftime('%Y%m%d%H%M%S%f')}"
+    clean_url = tweet_url.strip() if tweet_url and tweet_url.strip() else f"https://x.com/search?q={urllib.parse.quote(tweet_text[:60])}&f=live"
 
-    new_lead = FacebookLead(
-        post_id=post_id,
-        group_name=grp_name,
-        group_url=grp_url,
-        post_url=clean_post_url,
+    new_lead = XLead(
+        tweet_id=post_id,
+        author_handle=clean_handle,
+        author_name=clean_handle.lstrip("@"),
+        tweet_url=clean_url,
         target_market=target_market,
-        candidate_name=candidate_name or "Candidat",
-        post_snippet=post_snippet,
+        tweet_text=tweet_text,
         detected_issue=pitch["issue"],
-        suggested_comment=pitch["suggested_comment"],
+        suggested_reply=pitch["suggested_reply"],
         suggested_dm=pitch["suggested_dm"],
         status="NEW"
     )
     db.add(new_lead)
     db.commit()
-    return RedirectResponse(url="/founder#facebook-radar", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/founder#x-radar", status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.get("/founder/login", response_class=HTMLResponse)
