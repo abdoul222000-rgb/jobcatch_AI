@@ -11,8 +11,8 @@ class Settings(BaseSettings):
     SESSION_COOKIE_NAME: str = "jobcatch_session"
     SESSION_EXPIRE_DAYS: int = 14
     
-    # Base de données
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./jobcatch.db")
+    # Base de données (Compatible Vercel Serverless /tmp et Local/Render)
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:////tmp/jobcatch.db" if os.getenv("VERCEL") else "sqlite:///./jobcatch.db")
     
     # Tarification & Abonnement (\$39/mois avec 3 jours d'essai gratuit)
     PRO_PLAN_PRICE: float = 39.00

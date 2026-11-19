@@ -5,7 +5,7 @@ import urllib.parse
 from datetime import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, "jobcatch.db")
+DB_PATH = "/tmp/jobcatch.db" if os.getenv("VERCEL") else os.path.join(BASE_DIR, "jobcatch.db")
 
 # Flux de recherche stratégiques en direct sur X (Twitter)
 X_SEARCH_STREAMS = [

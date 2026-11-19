@@ -8,6 +8,18 @@ import os
 
 from .config import settings
 
+# Préparation Vercel Serverless : Copier la base SQLite vers /tmp (seul répertoire accessible en écriture)
+if os.getenv("VERCEL"):
+    import shutil
+    tmp_db_file = "/tmp/jobcatch.db"
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    local_db_file = os.path.join(project_root, "jobcatch.db")
+    if not os.path.exists(tmp_db_file) and os.path.exists(local_db_file):
+        try:
+            shutil.copy2(local_db_file, tmp_db_file)
+        except Exception:
+            pass
+
 # Configuration du moteur SQLite
 connect_args = {"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
 engine = create_engine(settings.DATABASE_URL, connect_args=connect_args)

@@ -6,9 +6,9 @@ from datetime import datetime
 import os
 import sqlite3
 
-# Chemins et configurations
+# Chemins et configurations (Vercel Serverless & Local)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DB_PATH = os.path.join(BASE_DIR, "jobcatch.db")
+DB_PATH = "/tmp/jobcatch.db" if os.getenv("VERCEL") else os.path.join(BASE_DIR, "jobcatch.db")
 
 SUBREDDITS = ["resumes", "jobs", "cscareerquestions", "csmajors", "recruitinghell"]
 
