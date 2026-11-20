@@ -326,25 +326,39 @@ def process_rebills(db: Session = Depends(get_db)):
     return {"status": "ok", "processed_rebills": processed_count, "amount_per_user": 39.00}
 
 
+@app.post("/webhook/whop")
 @app.post("/webhook/lemonsqueezy")
 @app.post("/webhook/stripe")
 async def payment_webhook(request: Request, db: Session = Depends(get_db)):
-    """Écouteur universel et automatique des paiements réussis (Lemon Squeezy & Stripe).
-       Dès que l'argent arrive, le compte du client passe instantanément en PRO ILLIMITÉ."""
+    """Écouteur universel et automatique des paiements réussis (Whop, Lemon Squeezy & Stripe).
+       Dès qu'un client démarre son essai ou valide son paiement, le compte du client passe instantanément en PRO ILLIMITÉ."""
     try:
         data = await request.json()
     except Exception:
         return JSONResponse(status_code=400, content={"error": "Invalid JSON"})
 
-    event_name = data.get("meta", {}).get("event_name", "") or data.get("type", "")
+    event_name = data.get("type", "") or data.get("meta", {}).get("event_name", "") or data.get("action", "")
     
-    # Extraction de l'email du client (Lemon Squeezy ou Stripe)
+    # Extraction de l'email du client (Whop, Lemon Squeezy ou Stripe)
     customer_email = ""
     sub_id = ""
     renews_at_raw = None
 
+    # Format Whop (ex: membership.went_valid, payment.succeeded)
+    if "data" in data and isinstance(data["data"], dict):
+        whop_data = data["data"]
+        user_info = whop_data.get("user")
+        if isinstance(user_info, dict):
+            customer_email = user_info.get("email") or ""
+        if not customer_email:
+            customer_email = whop_data.get("email") or ""
+        sub_id = str(whop_data.get("id", ""))
+        expires_at = whop_data.get("expires_at") or whop_data.get("valid_thru")
+        if expires_at and isinstance(expires_at, (int, float)):
+            renews_at_raw = datetime.utcfromtimestamp(expires_at)
+
     # Format Lemon Squeezy
-    if "data" in data and "attributes" in data["data"]:
+    if not customer_email and "data" in data and "attributes" in data["data"]:
         attrs = data["data"]["attributes"]
         customer_email = attrs.get("user_email") or attrs.get("customer_email") or ""
         sub_id = str(data["data"].get("id", ""))
@@ -390,11 +404,11 @@ async def payment_webhook(request: Request, db: Session = Depends(get_db)):
             db.commit()
         else:
             # Traitement des événements
-            if any(ev in event_name for ev in ["cancelled", "canceled", "expired"]):
+            if any(ev in event_name.lower() for ev in ["cancelled", "canceled", "expired", "invalid", "failed"]):
                 user.subscription_status = "CANCELLED"
                 user.auto_renew = 0
             else:
-                # Paiement reçu : Activation instantanée du plan Pro Illimité
+                # Paiement ou adhésion validée : Activation instantanée du plan Pro Illimité
                 user.subscription_status = "ACTIVE"
                 user.auto_renew = 1
                 user.subscription_id = sub_id or user.subscription_id
