@@ -271,17 +271,9 @@ def billing_page(request: Request, user: User = Depends(get_current_user)):
 
 @app.get("/checkout")
 def checkout_redirect(request: Request, db: Session = Depends(get_db), user = Depends(get_optional_user)):
-    """Redirige les candidats : accès VIP immédiat sans carte pendant le pré-lancement ou Lemon Squeezy si abonné"""
-    if not user:
-        log_page_visit(request, db, custom_path="/checkout (Free VIP Trial Started)")
-        # Accès immédiat pour ne perdre aucun client ce week-end !
-        return RedirectResponse(url="/register?vip=1", status_code=status.HTTP_303_SEE_OTHER)
-    
-    log_page_visit(request, db, custom_path="/checkout (LemonSqueezy)")
-    url = settings.LEMON_SQUEEZY_CHECKOUT_URL
-    sep = "&" if "?" in url else "?"
-    url = f"{url}{sep}checkout[email]={user.email}&checkout[name]={user.full_name}"
-    return RedirectResponse(url=url, status_code=status.HTTP_303_SEE_OTHER)
+    """Redirige directement vers le checkout officiel Whop ($39/mo avec 3 jours d'essai gratuit)"""
+    log_page_visit(request, db, custom_path="/checkout (Whop)")
+    return RedirectResponse(url=settings.WHOP_CHECKOUT_URL, status_code=status.HTTP_303_SEE_OTHER)
 
 
 @app.post("/api/demo/upgrade")

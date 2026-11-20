@@ -18,12 +18,9 @@ class Settings(BaseSettings):
     PRO_PLAN_PRICE: float = 39.00
     TRIAL_DAYS: int = 3
     
-    # Passerelle de paiement (Stripe / Lemon Squeezy)
-    STRIPE_SECRET_KEY: str = os.getenv("STRIPE_SECRET_KEY", "")
-    STRIPE_PUBLISHABLE_KEY: str = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
-    LEMON_SQUEEZY_API_KEY: str = os.getenv("LEMON_SQUEEZY_API_KEY", "")
-    LEMON_SQUEEZY_STORE_ID: str = os.getenv("LEMON_SQUEEZY_STORE_ID", "")
-    LEMON_SQUEEZY_CHECKOUT_URL: str = os.getenv("LEMON_SQUEEZY_CHECKOUT_URL", "https://jobcatch-ai.lemonsqueezy.com/checkout/buy/4bfc9c2d-14f7-45ef-ac35-cc1e23c80d42")
+    # Passerelle de paiement officielle (Whop - Carte, Apple Pay & Google Pay)
+    WHOP_CHECKOUT_URL: str = os.getenv("WHOP_CHECKOUT_URL", "https://whop.com/jobcatch-ai/jobcatch-ai-87")
+    LEMON_SQUEEZY_CHECKOUT_URL: str = os.getenv("LEMON_SQUEEZY_CHECKOUT_URL", "https://whop.com/jobcatch-ai/jobcatch-ai-87")
     
     # Compte Bancaire US de Réception (Lead Bank / Grey)
     LEAD_BANK_ROUTING: str = "101019644"
