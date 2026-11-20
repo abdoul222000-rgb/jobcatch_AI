@@ -51,7 +51,7 @@ def generate_tailored_reply(title: str, text: str, subreddit: str) -> str:
     reply = (
         f"I completely relate to this. {advice}\n\n"
         "A practical move is testing your bullet points through a live ATS parser simulator before submitting applications. "
-        "I built an interactive ATS simulator on JobCatch AI (https://jobcatch-ai.onrender.com) "
+        "I built an interactive ATS simulator on JobCatch AI (https://jobcatch-ai.vercel.app) "
         "that scores bullet points from 0 to 100% and illustrates how to transform generic 40% bullets into 95%+ impact lines for tech and corporate roles.\n\n"
         "Hope this helps you break through the filter—rooting for your next interview!"
     )

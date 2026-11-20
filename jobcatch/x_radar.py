@@ -73,12 +73,12 @@ def generate_x_tailored_pitch(author_handle: str, target_market: str, tweet_text
         issue = "Filtrage ATS suisse (SAP SuccessFactors / Jobup.ch) et format CV non conforme"
         reply = (
             f"{handle} Si tu postules en Suisse (Jobup/Indeed), 80% des rejets <24h viennent des ATS (SAP/Workday) qui bloquent les formats graphiques ou sans métriques.\n\n"
-            "Format épuré + mots-clés de l'offre obligatoire. Teste ton score ATS ici : https://jobcatch-ai.onrender.com 🇨🇭"
+            "Format épuré + mots-clés de l'offre obligatoire. Teste ton score ATS ici : https://jobcatch-ai.vercel.app 🇨🇭"
         )
         dm = (
             f"Hello {handle} ! J'ai vu ton tweet sur ta recherche d'emploi en Suisse. "
             "Le marché ici filtre énormément par SAP SuccessFactors et Workday avant qu'un recruteur ne lise le CV.\n\n"
-            "On a développé JobCatch AI (https://jobcatch-ai.onrender.com) qui adapte automatiquement les CVs aux exigences suisses "
+            "On a développé JobCatch AI (https://jobcatch-ai.vercel.app) qui adapte automatiquement les CVs aux exigences suisses "
             "et garantit un score ATS > 85%. N'hésite pas à le tester, force pour tes candidatures !"
         )
 
@@ -90,24 +90,24 @@ def generate_x_tailored_pitch(author_handle: str, target_market: str, tweet_text
             issue = "Workday/Greenhouse ATS auto-rejection due to low keyword match & weak metrics"
             reply = (
                 f"{handle} Corporate ATS (Workday/Greenhouse) parse line-by-line. If bullet points aren't quantified (X-Y-Z formula), the parser scores you <70% before a human sees it.\n\n"
-                "Align your bullets to the JD keywords. Free ATS simulator check: https://jobcatch-ai.onrender.com"
+                "Align your bullets to the JD keywords. Free ATS simulator check: https://jobcatch-ai.vercel.app"
             )
         elif any(w in text_lower for w in ["100", "200", "applied", "ghosted", "no interview"]):
             issue = "Mass applying without tailored ATS alignment causing 90%+ silent rejection rate"
             reply = (
                 f"{handle} Applying to 100+ roles with 1 generic resume hits the ATS wall every time. Recruiters get 400+ apps and filter anyone under 80% relevance.\n\n"
-                "Tailoring 10 resumes with exact impact metrics beats blasting 100. Check your ATS score: https://jobcatch-ai.onrender.com"
+                "Tailoring 10 resumes with exact impact metrics beats blasting 100. Check your ATS score: https://jobcatch-ai.vercel.app"
             )
         else:
             issue = "US tech resume lacking quantified impact metrics & competitive ATS density"
             reply = (
                 f"{handle} Quick tip that changes callback rates: swap passive bullet points for quantified impact (Accomplished [X] measured by [Y] doing [Z]).\n\n"
-                "Corporate ATS rank candidates on keyword density. Test your resume here: https://jobcatch-ai.onrender.com"
+                "Corporate ATS rank candidates on keyword density. Test your resume here: https://jobcatch-ai.vercel.app"
             )
 
         dm = (
             f"Hey {handle}, saw your tweet about the tech job hunt. The US market is rough right now with Workday and Greenhouse auto-filtering 80% of applicants.\n\n"
-            "We built JobCatch AI (https://jobcatch-ai.onrender.com) to reverse-engineer corporate ATS systems and tailor resumes to 95%+ match scores in seconds.\n\n"
+            "We built JobCatch AI (https://jobcatch-ai.vercel.app) to reverse-engineer corporate ATS systems and tailor resumes to 95%+ match scores in seconds.\n\n"
             "Feel free to test your resume through it. Rooting for your next interview!"
         )
 
