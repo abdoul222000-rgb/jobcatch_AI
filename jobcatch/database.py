@@ -21,8 +21,8 @@ if os.getenv("VERCEL"):
             pass
 
 # Configuration du moteur SQLite
-connect_args = {"check_same_thread": False} if "sqlite" in settings.DATABASE_URL else {}
-engine = create_engine(settings.DATABASE_URL, connect_args=connect_args)
+connect_args = {"check_same_thread": False} if "sqlite" in settings.JOBCATCH_DATABASE_URL else {}
+engine = create_engine(settings.JOBCATCH_DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
@@ -249,37 +249,30 @@ def auto_migrate():
     """Vérifie et ajoute les colonnes manquantes dans SQLite sans casser les données"""
     try:
         with engine.connect() as conn:
-            result = conn.execute(Base.metadata.tables["users"].select().limit(0))
+            if "sqlite" in str(settings.DATABASE_URL):
+                cursor = conn.connection.cursor()
+                cursor.execute("PRAGMA table_info(users)")
+                existing_cols = {col[1] for col in cursor.fetchall()}
+                if existing_cols:
+                    columns_to_ensure = {
+                        "hashed_password": "VARCHAR(255) DEFAULT ''",
+                        "is_admin": "INTEGER DEFAULT 0",
+                        "card_brand": "VARCHAR(50) DEFAULT 'Visa'",
+                        "card_last4": "VARCHAR(4) DEFAULT '4242'",
+                        "card_exp": "VARCHAR(10) DEFAULT '12/28'",
+                        "auto_renew": "INTEGER DEFAULT 1",
+                        "subscription_status": "VARCHAR(50) DEFAULT 'TRIAL'",
+                        "subscription_id": "VARCHAR(255)"
+                    }
+                    for col, col_type in columns_to_ensure.items():
+                        if col not in existing_cols:
+                            try:
+                                cursor.execute(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
+                            except Exception:
+                                pass
+                    conn.connection.commit()
     except Exception:
         pass
-    
-    # Pragma check direct pour SQLite
-    if "sqlite" in settings.DATABASE_URL:
-        import sqlite3
-        db_path = settings.DATABASE_URL.replace("sqlite:///", "").replace("sqlite://", "")
-        if os.path.exists(db_path):
-            conn = sqlite3.connect(db_path)
-            c = conn.cursor()
-            c.execute("PRAGMA table_info(users)")
-            existing_cols = {row[1] for row in c.fetchall()}
-            
-            columns_to_ensure = {
-                "is_admin": "INTEGER DEFAULT 0",
-                "card_brand": "VARCHAR(50) DEFAULT 'Visa'",
-                "card_last4": "VARCHAR(4) DEFAULT '4242'",
-                "card_exp": "VARCHAR(10) DEFAULT '12/28'",
-                "auto_renew": "INTEGER DEFAULT 1",
-                "subscription_status": "VARCHAR(50) DEFAULT 'TRIAL'",
-                "subscription_id": "VARCHAR(255)"
-            }
-            for col, col_type in columns_to_ensure.items():
-                if col not in existing_cols and existing_cols:
-                    try:
-                        c.execute(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
-                    except Exception:
-                        pass
-            conn.commit()
-            conn.close()
 
 
 def init_db():

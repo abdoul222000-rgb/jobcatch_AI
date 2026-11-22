@@ -463,7 +463,13 @@ def get_current_founder(request: Request, db: Session):
 
 
 @app.get("/founder", response_class=HTMLResponse)
-def founder_portal(request: Request, db: Session = Depends(get_db)):
+def founder_portal(
+    request: Request,
+    period: str = "all",
+    date_from: str = None,
+    date_to: str = None,
+    db: Session = Depends(get_db)
+):
     """Tableau de bord exécutif exclusif pour le Fondateur (Assouman Abdoul Aziz Diabagate)"""
     founder = get_current_founder(request, db)
     if not founder:
@@ -475,11 +481,46 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
     trial_subs = sum(1 for c in candidates if c.subscription_status == "TRIAL")
     total_apps = db.query(JobApplication).count()
     
-    # 2. Métriques de visites
+    # 2. Métriques temporelles complètes (Aujourd'hui, Hier, 7j, 30j, Tout)
+    now = datetime.utcnow()
+    today_start = datetime(now.year, now.month, now.day)
+    yesterday_start = today_start - timedelta(days=1)
+    last_7d_start = today_start - timedelta(days=7)
+    last_30d_start = today_start - timedelta(days=30)
+    
     total_visits = db.query(PageVisit).count()
-    since_24h = datetime.utcnow() - timedelta(hours=24)
-    visits_today = db.query(PageVisit).filter(PageVisit.timestamp >= since_24h).count()
-    recent_visits = db.query(PageVisit).order_by(PageVisit.timestamp.desc()).limit(30).all()
+    visits_today = db.query(PageVisit).filter(PageVisit.timestamp >= today_start).count()
+    visits_yesterday = db.query(PageVisit).filter(PageVisit.timestamp >= yesterday_start, PageVisit.timestamp < today_start).count()
+    visits_7d = db.query(PageVisit).filter(PageVisit.timestamp >= last_7d_start).count()
+    visits_30d = db.query(PageVisit).filter(PageVisit.timestamp >= last_30d_start).count()
+
+    # Filtrage dynamique selon la période sélectionnée
+    filter_label = "Tout l'historique"
+    visits_query = db.query(PageVisit)
+
+    if period == "today":
+        filter_label = "Aujourd'hui"
+        visits_query = visits_query.filter(PageVisit.timestamp >= today_start)
+    elif period == "yesterday":
+        filter_label = "Hier"
+        visits_query = visits_query.filter(PageVisit.timestamp >= yesterday_start, PageVisit.timestamp < today_start)
+    elif period == "7d":
+        filter_label = "7 derniers jours"
+        visits_query = visits_query.filter(PageVisit.timestamp >= last_7d_start)
+    elif period == "30d":
+        filter_label = "30 derniers jours"
+        visits_query = visits_query.filter(PageVisit.timestamp >= last_30d_start)
+    elif period == "custom" and date_from:
+        try:
+            from_dt = datetime.strptime(date_from.strip(), "%Y-%m-%d")
+            to_dt = datetime.strptime(date_to.strip(), "%Y-%m-%d") + timedelta(days=1) if date_to else now
+            filter_label = f"Du {date_from} au {date_to or 'maintenant'}"
+            visits_query = visits_query.filter(PageVisit.timestamp >= from_dt, PageVisit.timestamp <= to_dt)
+        except Exception:
+            filter_label = "Période personnalisée"
+
+    selected_visits_count = visits_query.count()
+    recent_visits = visits_query.order_by(PageVisit.timestamp.desc()).limit(100).all()
     
     # 3. Revenu mensuel récurrent prévisionnel ($39/mo)
     mrr = active_subs * settings.PRO_PLAN_PRICE
@@ -507,6 +548,14 @@ def founder_portal(request: Request, db: Session = Depends(get_db)):
             "total_apps": total_apps,
             "total_visits": total_visits,
             "visits_today": visits_today,
+            "visits_yesterday": visits_yesterday,
+            "visits_7d": visits_7d,
+            "visits_30d": visits_30d,
+            "period": period,
+            "filter_label": filter_label,
+            "date_from": date_from or "",
+            "date_to": date_to or "",
+            "selected_visits_count": selected_visits_count,
             "recent_visits": recent_visits,
             "radar_leads": radar_leads,
             "x_leads": x_leads,

@@ -37,15 +37,20 @@
 
     <!-- 6 Executive KPI Metrics Cards -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
-        <!-- Metric 1: Total Visitors -->
+        <!-- Metric 1: Total Visitors with Period Breakdown -->
         <div class="rounded-2xl border border-slate-800 bg-slate-900/60 p-4">
             <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
                 <span>Site Visitors</span>
-                <i class="fa-solid fa-eye text-indigo-400"></i>
+                <i class="fa-solid fa-chart-line text-indigo-400"></i>
             </div>
             <div class="text-2xl font-black text-white mt-1">{{ total_visits }}</div>
-            <div class="text-[10px] text-emerald-400 mt-1 flex items-center">
-                <i class="fa-solid fa-arrow-trend-up mr-1"></i>{{ visits_today }} visits today
+            <div class="text-[10px] text-emerald-400 mt-1 flex items-center justify-between">
+                <span><i class="fa-solid fa-calendar-day mr-1"></i>Auj. : <strong>{{ visits_today }}</strong></span>
+                <span class="text-slate-400">Hier : <strong>{{ visits_yesterday }}</strong></span>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+                <span>7 jours : <strong class="text-indigo-300">{{ visits_7d }}</strong></span>
+                <span>30 jours : <strong class="text-purple-300">{{ visits_30d }}</strong></span>
             </div>
         </div>
 
@@ -553,48 +558,98 @@
         <!-- Right Col: Real-time Live Visitor Stream -->
         <div class="space-y-6">
             <div class="rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur p-5">
+                <!-- Header -->
                 <div class="flex items-center justify-between pb-4 border-b border-slate-800">
                     <div>
                         <h2 class="text-base font-black text-white flex items-center space-x-2">
-                            <i class="fa-solid fa-signal text-emerald-400"></i>
-                            <span>Live Visitor Stream</span>
+                            <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+                            <span>Historique & Analyse des Visites</span>
                         </h2>
-                        <p class="text-[11px] text-slate-400">Incoming traffic (TikTok, Reddit, USA direct)</p>
+                        <p class="text-[11px] text-slate-400">Filtrage temporel précis du trafic (LinkedIn, Whop, Direct)</p>
                     </div>
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                        {{ selected_visits_count }} visites
+                    </span>
                 </div>
 
-                <div class="mt-4 space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                <!-- Quick Period Filter Pills -->
+                <div class="mt-4 flex flex-wrap gap-1.5 text-[11px]">
+                    <a href="/founder?period=today" class="px-2.5 py-1 rounded-lg border font-semibold transition {% if period == 'today' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20{% else %}bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700{% endif %}">
+                        Aujourd'hui ({{ visits_today }})
+                    </a>
+                    <a href="/founder?period=yesterday" class="px-2.5 py-1 rounded-lg border font-semibold transition {% if period == 'yesterday' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20{% else %}bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700{% endif %}">
+                        Hier ({{ visits_yesterday }})
+                    </a>
+                    <a href="/founder?period=7d" class="px-2.5 py-1 rounded-lg border font-semibold transition {% if period == '7d' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20{% else %}bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700{% endif %}">
+                        7 jours ({{ visits_7d }})
+                    </a>
+                    <a href="/founder?period=30d" class="px-2.5 py-1 rounded-lg border font-semibold transition {% if period == '30d' %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20{% else %}bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700{% endif %}">
+                        30 jours ({{ visits_30d }})
+                    </a>
+                    <a href="/founder?period=all" class="px-2.5 py-1 rounded-lg border font-semibold transition {% if period == 'all' or not period %}bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20{% else %}bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-700{% endif %}">
+                        Tout ({{ total_visits }})
+                    </a>
+                </div>
+
+                <!-- Custom Date Range Form -->
+                <form action="/founder" method="GET" class="mt-3 p-2.5 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-wrap items-center gap-2 text-xs">
+                    <input type="hidden" name="period" value="custom">
+                    <span class="text-[11px] font-bold text-slate-400 flex items-center">
+                        <i class="fa-solid fa-calendar mr-1 text-slate-500"></i>Personnaliser :
+                    </span>
+                    <input type="date" name="date_from" value="{{ date_from }}" class="bg-slate-900 border border-slate-700 text-slate-200 text-[11px] rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-500">
+                    <span class="text-slate-500 text-[11px]">au</span>
+                    <input type="date" name="date_to" value="{{ date_to }}" class="bg-slate-900 border border-slate-700 text-slate-200 text-[11px] rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-500">
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] px-3 py-1 rounded-lg transition shadow">
+                        Filtrer
+                    </button>
+                    {% if period == 'custom' %}
+                    <a href="/founder?period=all" class="text-slate-400 hover:text-slate-200 text-[11px] underline ml-auto">Réinitialiser</a>
+                    {% endif %}
+                </form>
+
+                <!-- Current Active Period Banner -->
+                <div class="mt-3 flex items-center justify-between text-[11px] px-1 text-slate-400">
+                    <span>Affichage : <strong class="text-indigo-400">{{ filter_label }}</strong></span>
+                    <span>Total trouvé : <strong class="text-white">{{ selected_visits_count }}</strong></span>
+                </div>
+
+                <!-- Visits List -->
+                <div class="mt-3 space-y-2.5 max-h-[480px] overflow-y-auto pr-1">
                     {% if recent_visits %}
                         {% for visit in recent_visits %}
-                        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs flex flex-col space-y-1">
+                        <div class="p-3 rounded-xl bg-slate-950/70 border border-slate-800/80 text-xs flex flex-col space-y-1 hover:border-slate-700 transition">
                             <div class="flex items-center justify-between">
                                 <span class="font-mono font-bold text-purple-300">{{ visit.path }}</span>
-                                <span class="text-[10px] text-slate-400">{{ visit.timestamp.strftime('%H:%M:%S') if visit.timestamp else 'Just now' }}</span>
+                                <span class="text-[10px] text-slate-400">
+                                    {{ visit.timestamp.strftime('%d/%m/%Y à %H:%M:%S') if visit.timestamp else 'Récemment' }}
+                                </span>
                             </div>
-                            <div class="text-[11px] text-slate-300 truncate">
-                                {% if 'TikTok' in (visit.user_agent or '') %}
+                            <div class="text-[11px] text-slate-300 truncate flex items-center space-x-2">
+                                {% if 'LinkedIn' in (visit.user_agent or '') or 'linkedin' in (visit.referrer or '').lower() %}
+                                    <span class="text-blue-400 font-bold"><i class="fa-brands fa-linkedin mr-1"></i>Trafic LinkedIn</span>
+                                {% elif 'TikTok' in (visit.user_agent or '') %}
                                     <span class="text-pink-400 font-bold"><i class="fa-brands fa-tiktok mr-1"></i>TikTok In-App Browser</span>
-                                {% elif 'Reddit' in (visit.user_agent or '') %}
+                                {% elif 'Reddit' in (visit.user_agent or '') or 'reddit' in (visit.referrer or '').lower() %}
                                     <span class="text-orange-400 font-bold"><i class="fa-brands fa-reddit mr-1"></i>Reddit Traffic</span>
-                                {% elif 'Mobile' in (visit.user_agent or '') %}
-                                    <span class="text-blue-400"><i class="fa-solid fa-mobile-screen mr-1"></i>Mobile User</span>
+                                {% elif 'Mobile' in (visit.user_agent or '') or 'iPhone' in (visit.user_agent or '') or 'Android' in (visit.user_agent or '') %}
+                                    <span class="text-emerald-400"><i class="fa-solid fa-mobile-screen mr-1"></i>Mobile User</span>
                                 {% else %}
                                     <span class="text-slate-400"><i class="fa-solid fa-desktop mr-1"></i>Desktop Browser</span>
                                 {% endif %}
                             </div>
                             {% if visit.referrer %}
                             <div class="text-[10px] text-slate-500 truncate">
-                                Source: {{ visit.referrer }}
+                                Provenance : {{ visit.referrer }}
                             </div>
                             {% endif %}
                         </div>
                         {% endfor %}
                     {% else %}
-                        <div class="p-6 text-center text-xs text-slate-500">
-                            <i class="fa-solid fa-globe text-2xl text-slate-700 mb-2"></i>
-                            <div>No external visits recorded yet.</div>
-                            <div class="text-[10px] text-slate-600 mt-1">Traffic from TikTok and Reddit will appear here automatically.</div>
+                        <div class="p-6 text-center text-xs text-slate-500 bg-slate-950/40 rounded-xl border border-slate-800/40">
+                            <i class="fa-solid fa-filter-circle-xmark text-2xl text-slate-700 mb-2"></i>
+                            <div>Aucune visite enregistrée pour cette période.</div>
+                            <div class="text-[10px] text-slate-600 mt-1">Essaie de sélectionner « Tout l'historique » ou « 7 jours ».</div>
                         </div>
                     {% endif %}
                 </div>
