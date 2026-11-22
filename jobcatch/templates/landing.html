@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="relative overflow-hidden pt-12 pb-24">
+<div class="relative overflow-hidden pt-10 pb-24">
     <!-- Glow Background -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-purple-600/20 via-indigo-600/15 to-transparent blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[850px] h-[450px] bg-gradient-to-tr from-purple-600/25 via-indigo-600/20 to-pink-500/10 blur-[130px] pointer-events-none"></div>
 
     <!-- Hero Section -->
     <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center relative z-10">
-        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold mb-6">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Over 14,280 Interviews Unlocked Across the USA & Switzerland 🇺🇸 🇨🇭</span>
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-xs font-bold mb-6 backdrop-blur">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Over 14,280 Interviews Unlocked Across USA & Switzerland 🇺🇸 🇨🇭</span>
         </div>
 
-        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl mx-auto leading-[1.12]">
             Stop spending 40 hours applying to jobs. <br>
             <span class="bg-gradient-to-r from-purple-400 via-indigo-300 to-pink-400 bg-clip-text text-transparent">
                 Let AI tailor your resume & auto-apply to 50 jobs a day.
@@ -20,15 +20,16 @@
         </h1>
 
         <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Beat corporate ATS resume filters (Workday, Taleo, Greenhouse, SuccessFactors). JobCatch AI tailors your bullet points, writes custom cover letters, and submits verified applications on LinkedIn, Indeed, Jobup.ch, and Handshake on autopilot.
+            Beat corporate ATS resume filters (Workday, SAP, Taleo, Greenhouse). JobCatch AI tailors your bullet points, writes custom cover letters, and submits verified applications on LinkedIn, Indeed, and Jobup.ch on autopilot.
         </p>
 
         <!-- CTA Buttons -->
         <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="/checkout" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-base shadow-xl shadow-purple-600/30 transition transform hover:-translate-y-0.5">
-                Start 3-Day Free Trial ($0 Today) &rarr;
+            <a href="/checkout" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-base shadow-xl shadow-purple-600/35 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                <span>Start 3-Day Free Trial ($0 Today)</span>
+                <i class="fa-solid fa-arrow-right text-sm"></i>
             </a>
-            <a href="/login?demo=true" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-bold text-base transition flex items-center justify-center space-x-2">
+            <a href="/login?demo=true" class="w-full sm:w-auto px-8 py-4 rounded-xl border border-slate-700 bg-slate-900/70 hover:bg-slate-800 text-slate-200 font-bold text-base transition flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-play text-purple-400 text-xs"></i>
                 <span>Try Live Demo (No Card Needed)</span>
             </a>
@@ -38,80 +39,321 @@
             <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>$0.00 Due Today</span>
             <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>3-Day Full Pro Access</span>
             <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Cancel in 1-Click Anytime</span>
-            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i>Direct Lead Bank Settlement</span>
+            <span><i class="fa-solid fa-shield-halved text-purple-400 mr-1.5"></i>Bank-Grade Stripe & Swiss Security</span>
         </div>
     </div>
 
-    <!-- Live Interactive ATS Simulator Widget -->
-    <div class="max-w-5xl mx-auto px-4 mt-16 relative z-10">
-        <div class="rounded-2xl border border-slate-800 bg-slate-900/90 shadow-2xl p-6 sm:p-8 backdrop-blur">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-800 gap-4">
+    <!-- ============================================================================== -->
+    <!-- OPTION 2 : LE SIMULATEUR "CHOC" SUR LA PAGE D'ACCUEIL (FOCUS CONVERSION ⚡)     -->
+    <!-- ============================================================================== -->
+    <div id="simulator-section" class="max-w-5xl mx-auto px-4 mt-16 relative z-10">
+        <div class="rounded-3xl border-2 border-purple-500/40 bg-gradient-to-b from-slate-900/95 via-slate-900/90 to-slate-950/95 shadow-2xl shadow-purple-950/40 p-6 sm:p-9 backdrop-blur relative overflow-hidden">
+            <!-- Background Radial Glow -->
+            <div class="absolute -top-24 -right-24 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <!-- Top Header & Language Switcher -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-4 relative z-10">
                 <div>
-                    <h2 class="text-xl font-black text-white flex items-center space-x-2">
-                        <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
-                        <span>Live ATS Resume Tailorer Simulator</span>
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-purple-300 text-xs font-extrabold uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-bolt text-yellow-400 animate-bounce"></i>
+                        <span id="badge-sim-title">Simulateur ATS "Choc" en Direct ⚡</span>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-white" id="sim-heading">
+                        Testez votre CV face aux algorithmes d'embauche
                     </h2>
-                    <p class="text-xs text-slate-400 mt-1">See how JobCatch AI rewrites your resume to pass corporate ATS algorithms with 95%+ match scores.</p>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl" id="sim-subtitle">
+                        Découvrez en 3 secondes pourquoi 80% des CV sont rejetés par Workday, SAP et Greenhouse avant qu'un humain ne les lise, et comment l'IA vous propulse dans le Top 1%.
+                    </p>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <span class="text-xs text-slate-400">Target Role:</span>
-                    <span class="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 font-bold text-xs">Software Engineer ($105k/yr / 115k CHF)</span>
+
+                <!-- Language Toggle Button -->
+                <div class="flex items-center bg-slate-950/80 border border-slate-800 rounded-xl p-1 self-start sm:self-center">
+                    <button id="lang-fr" onclick="switchSimulatorLang('fr')" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-purple-600 text-white shadow-sm">
+                        🇨🇭 Français
+                    </button>
+                    <button id="lang-en" onclick="switchSimulatorLang('en')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition">
+                        🇺🇸 English
+                    </button>
                 </div>
             </div>
 
-            <!-- Simulator Columns -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <!-- Before -->
-                <div class="rounded-xl border border-rose-500/20 bg-rose-500/5 p-5">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center">
-                            <i class="fa-solid fa-circle-xmark mr-1.5"></i>Standard Resume (Generic)
-                        </span>
-                        <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-black text-xs">ATS Score: 44% (Rejected)</span>
+            <!-- STEP 1 : INPUTS (Poste visé, Entreprise & CV Actuel) -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-12 gap-5 relative z-10">
+                <!-- Role & ATS Selection -->
+                <div class="md:col-span-5 space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center justify-between">
+                            <span id="label-target-role">1. Votre Métier / Poste Visé :</span>
+                            <span class="text-[10px] text-purple-400 font-semibold lowercase">ex: Dev, Data, Finance</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-briefcase absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
+                            <input type="text" id="sim-role-input" value="Software Engineer (Full Stack)" class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl py-2.5 pl-9 pr-3 text-sm text-white placeholder-slate-500 transition">
+                        </div>
                     </div>
-                    <div class="text-xs text-slate-300 space-y-2 font-mono bg-slate-950/60 p-4 rounded-lg border border-slate-800">
-                        <p class="text-slate-400">• Built website features using Python and JavaScript.</p>
-                        <p class="text-slate-400">• Worked with team members to fix bugs and write tests.</p>
-                        <p class="text-slate-400">• Helped improve backend database query speed.</p>
+
+                    <!-- Quick Preset Chips -->
+                    <div>
+                        <span class="text-[11px] font-semibold text-slate-400 block mb-1.5" id="label-quick-presets">Ou choisissez un profil type :</span>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button onclick="loadProfilePreset('swe')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 transition">
+                                💻 Dev Full Stack
+                            </button>
+                            <button onclick="loadProfilePreset('data')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                                🧠 Data / IA
+                            </button>
+                            <button onclick="loadProfilePreset('devops')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                                ☁️ Cloud / DevOps
+                            </button>
+                            <button onclick="loadProfilePreset('swiss_corp')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                                🇨🇭 Swiss Banking / Finance
+                            </button>
+                        </div>
                     </div>
-                    <div class="mt-3 text-[11px] text-rose-300/80">
-                        <i class="fa-solid fa-triangle-exclamation mr-1"></i>Lacks target keywords, impact metrics, and corporate ATS compliance.
+
+                    <!-- Target Company / ATS Engine -->
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5" id="label-target-company">
+                            2. Entreprise / Algorithme ATS Cible :
+                        </label>
+                        <select id="sim-ats-select" class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-purple-500 rounded-xl py-2.5 px-3 text-xs text-slate-200">
+                            <option value="nestle">🇨🇭 Nestlé / Novartis / Roche (ATS: Workday Suisse)</option>
+                            <option value="ubs">🏦 UBS / Swiss Re / Banque Privée (ATS: SAP SuccessFactors)</option>
+                            <option value="google">🇺🇸 Google / Meta / Stripe (ATS: Greenhouse)</option>
+                            <option value="remote">🌍 Remote US & European Startup (ATS: Lever / Taleo)</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- After (JobCatch AI) -->
-                <div class="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center">
-                            <i class="fa-solid fa-circle-check mr-1.5"></i>JobCatch AI Tailored (Optimized)
-                        </span>
-                        <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-black text-xs">ATS Score: 96% (Interview Ready!)</span>
+                <!-- Resume Bullet Point Input -->
+                <div class="md:col-span-7 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-300" id="label-bullet-input">
+                                3. Votre ligne de CV actuelle (Ce qu'un candidat écrit) :
+                            </label>
+                            <button onclick="resetDefaultBullet()" class="text-[10px] text-purple-400 hover:text-purple-300 font-semibold">
+                                <i class="fa-solid fa-rotate-left mr-1"></i><span id="label-reset-btn">Exemple par défaut</span>
+                            </button>
+                        </div>
+                        <textarea id="sim-bullet-input" rows="4" class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl p-3 text-xs text-slate-200 font-mono transition leading-relaxed" placeholder="Collez une puce ou phrase de votre CV ici...">Built web features using Python and fixed database bugs for team applications.</textarea>
                     </div>
-                    <div class="text-xs text-slate-200 space-y-2 font-mono bg-slate-950/60 p-4 rounded-lg border border-emerald-500/20">
-                        <p class="text-emerald-200">• Architected asynchronous FastAPI REST endpoints serving 10k+ requests/sec with 99.9% uptime.</p>
-                        <p class="text-emerald-200">• Automated CI/CD deployment pipelines on Docker & AWS, accelerating sprint release velocity by 35%.</p>
-                        <p class="text-emerald-200">• Optimized PostgreSQL query bottlenecks, reducing end-to-end API latency by 42%.</p>
-                    </div>
-                    <div class="mt-3 text-[11px] text-emerald-300">
-                        <i class="fa-solid fa-bolt mr-1"></i>Optimized with exact job keywords, quantifiable metrics, and instant cover letter generation.
+
+                    <!-- The Choc Trigger Button -->
+                    <div class="mt-4">
+                        <button id="btn-run-simulation" onclick="runShockSimulation()" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 hover:opacity-95 text-white font-black text-sm uppercase tracking-wide shadow-xl shadow-purple-600/35 transition transform hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center space-x-2.5 cursor-pointer">
+                            <i class="fa-solid fa-wand-magic-sparkles text-yellow-300 text-base"></i>
+                            <span id="btn-run-text">⚡ SIMULER LE SCAN ATS EN DIRECT (Test en 3s)</span>
+                        </button>
+                        <div class="text-center mt-2 text-[11px] text-slate-400 font-medium flex items-center justify-center space-x-3">
+                            <span><i class="fa-solid fa-bolt text-yellow-400 mr-1"></i><span id="sim-disclaimer-1">100% Gratuit & Immédiat</span></span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-lock text-emerald-400 mr-1"></i><span id="sim-disclaimer-2">Aucune inscription requise</span></span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Simulator Action Banner -->
-            <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-full bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                        <i class="fa-solid fa-robot"></i>
+            <!-- STEP 2 : LIVE 3-SECOND SCAN ANIMATION (Hidden until clicked) -->
+            <div id="sim-scanner-box" class="hidden mt-8 pt-6 border-t border-slate-800">
+                <div class="p-6 rounded-2xl bg-slate-950/90 border border-purple-500/30 text-center relative overflow-hidden">
+                    <!-- Scanner Laser Beam -->
+                    <div class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent animate-pulse shadow-lg shadow-purple-500/50"></div>
+                    
+                    <div class="flex items-center justify-center space-x-3 mb-3">
+                        <div class="w-8 h-8 rounded-full border-2 border-purple-400 border-t-transparent animate-spin"></div>
+                        <span id="scanner-step-text" class="text-sm font-extrabold text-white">Analyse des filtres ATS d'entreprise en cours...</span>
                     </div>
-                    <div class="text-left">
-                        <div class="text-sm font-bold text-white">Auto-Apply Queue Active</div>
-                        <div class="text-xs text-slate-400">Submitting 50 tailored applications per day across US & Swiss job portals (LinkedIn, Jobup.ch, Indeed)</div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-800 rounded-full h-2.5 max-w-md mx-auto overflow-hidden">
+                        <div id="scanner-progress-bar" class="bg-gradient-to-r from-rose-500 via-yellow-400 to-emerald-400 h-2.5 rounded-full transition-all duration-700 ease-out" style="width: 15%"></div>
+                    </div>
+
+                    <div class="mt-3 text-xs text-slate-400 font-mono" id="scanner-subtext">
+                        Test de compatibilité avec l'algorithme d'élimination automatique...
                     </div>
                 </div>
-                <a href="/login?demo=true" class="px-6 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm shadow-lg shadow-purple-600/20 transition">
-                    Test Live Demo Dashboard &rarr;
-                </a>
+            </div>
+
+            <!-- STEP 3 : THE "CHOC" & "WAHOO" RESULT DISPLAY (Revealed after 3s) -->
+            <div id="sim-result-box" class="mt-8 pt-6 border-t border-slate-800 relative z-10">
+                <!-- Dual Comparison Before / After -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <!-- BEFORE : LE CHOC (CV Standard éliminé) -->
+                    <div class="rounded-2xl border-2 border-rose-500/30 bg-rose-500/5 p-5 relative overflow-hidden">
+                        <div class="flex items-center justify-between pb-3 border-b border-rose-500/20">
+                            <span class="text-xs font-black uppercase tracking-wider text-rose-400 flex items-center">
+                                <i class="fa-solid fa-circle-xmark mr-1.5 text-rose-400 text-sm"></i>
+                                <span id="res-before-label">Votre CV Standard (Non-Optimisé)</span>
+                            </span>
+                            <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-rose-500/20 border border-rose-500/30 text-rose-300 font-black text-xs animate-pulse">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <span id="res-before-score">Score ATS : 38% (Rejet Immédiat)</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="res-before-box-label">Ce que l'algorithme lit :</div>
+                            <div id="display-before-text" class="text-xs text-slate-300 font-mono bg-slate-950/70 p-3.5 rounded-xl border border-rose-500/20 leading-relaxed">
+                                "Built web features using Python and fixed database bugs for team applications."
+                            </div>
+                        </div>
+
+                        <!-- Verdict Choc -->
+                        <div class="mt-4 p-3 rounded-xl bg-rose-950/40 border border-rose-500/25 text-rose-200 text-xs space-y-1.5">
+                            <div class="font-bold flex items-center">
+                                <i class="fa-solid fa-ban text-rose-400 mr-2 text-sm"></i>
+                                <span id="res-before-verdict">Résultat : Éliminé en moins de 10 secondes</span>
+                            </div>
+                            <p class="text-[11px] text-rose-300/80 leading-normal" id="res-before-detail">
+                                Aucun recruteur humain ne verra jamais votre profil. L'ATS d'entreprise classe ce CV comme "générique" par manque de mots-clés techniques ciblés et de métriques d'impact (ROI).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- AFTER : LE WAHOO (JobCatch AI 98%) -->
+                    <div class="rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 p-5 relative overflow-hidden shadow-lg shadow-emerald-950/30">
+                        <div class="flex items-center justify-between pb-3 border-b border-emerald-500/20">
+                            <span class="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center">
+                                <i class="fa-solid fa-circle-check mr-1.5 text-emerald-400 text-sm"></i>
+                                <span id="res-after-label">CV Propulsé par JobCatch AI</span>
+                            </span>
+                            <div class="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-black text-xs">
+                                <i class="fa-solid fa-trophy text-yellow-400"></i>
+                                <span id="res-after-score">Score ATS : 98% (Entretien Garanti)</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="res-after-box-label">Transformation Instantanée (Formule Google XYZ) :</div>
+                            <div id="display-after-text" class="text-xs text-emerald-200 font-mono bg-slate-950/70 p-3.5 rounded-xl border border-emerald-500/30 leading-relaxed">
+                                • <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">Architected asynchronous FastAPI & React microservices</span> serving 25k+ DAU; optimized PostgreSQL indexing to slash query latency by <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">44%</span> with 99.9% uptime.
+                            </div>
+                        </div>
+
+                        <!-- Verdict Wahoo -->
+                        <div class="mt-4 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200 text-xs space-y-1.5">
+                            <div class="font-bold flex items-center">
+                                <i class="fa-solid fa-circle-check text-emerald-400 mr-2 text-sm"></i>
+                                <span id="res-after-verdict">Résultat : Profil classé dans le Top 1% des Candidats</span>
+                            </div>
+                            <p class="text-[11px] text-emerald-300/90 leading-normal" id="res-after-detail">
+                                Mots-clés requis injectés à 100%, métriques d'impact chiffrées, validation automatique par Workday & SAP. Décrochage d'entretien en 24h à 48h !
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Tabs for Bonus Features (Cover Letter & Auto-Apply) -->
+                <div class="mt-6 rounded-2xl bg-slate-950/70 border border-slate-800 p-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800">
+                        <div class="flex space-x-2">
+                            <button id="tab-bullet-btn" onclick="switchResultTab('bullet')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-file-lines text-xs"></i>
+                                <span id="tab-bullet-text">CV Optimisé</span>
+                            </button>
+                            <button id="tab-letter-btn" onclick="switchResultTab('letter')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-envelope-open-text text-xs"></i>
+                                <span id="tab-letter-text">Lettre de Motivation IA</span>
+                            </button>
+                            <button id="tab-queue-btn" onclick="switchResultTab('queue')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-paper-plane text-xs"></i>
+                                <span id="tab-queue-text">File Auto-Apply (50 offres/j)</span>
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-400 font-semibold" id="tab-status-indicator">
+                            <i class="fa-solid fa-circle-dot text-emerald-400 mr-1.5 animate-pulse"></i>Prêt à postuler en 1 clic
+                        </div>
+                    </div>
+
+                    <!-- Tab 1 : Bullet Details -->
+                    <div id="tab-content-bullet" class="mt-4 text-xs text-slate-300 space-y-2">
+                        <p class="text-slate-400 font-medium" id="tab-bullet-desc">Voici les 3 points clés optimisés automatiquement pour franchir les filtres de l'entreprise :</p>
+                        <div class="space-y-2 font-mono text-[11px]" id="tab-bullet-list">
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex items-start space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong class="text-white">Formule Action + Impact :</strong> Verbes d'action puissants en tête de phrase (Architected, Engineered, Automated).</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex items-start space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong class="text-white">Alignement Mots-Clés ATS :</strong> 100% de concordance sémantique avec la fiche de poste sans bourrage artificiel.</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex items-start space-x-2">
+                                <span class="text-emerald-400 font-bold">✓</span>
+                                <span><strong class="text-white">Métriques ROI Quantifiées :</strong> +44% d'accélération, 99.9% de fiabilité et volume de requêtes prouvés.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2 : Instant Cover Letter Preview -->
+                    <div id="tab-content-letter" class="hidden mt-4">
+                        <div class="p-4 rounded-xl bg-slate-900/90 border border-purple-500/30 text-xs font-mono text-slate-200 leading-relaxed space-y-3" id="tab-letter-content">
+                            <p><strong class="text-purple-300">Objet :</strong> Candidature pour le poste de <span id="letter-role-preview">Software Engineer</span> — Profil qualifié ATS</p>
+                            <p>Madame, Monsieur le Responsable du Recrutement,</p>
+                            <p>Fort d'une solide expertise en conception de systèmes robustes et d'architectures modernes, j'ai développé des solutions capables d'absorber une forte charge tout en réduisant la latence de 44%. Votre mission chez <span id="letter-company-preview">l'entreprise cible</span> correspond exactement à mon savoir-faire technique.</p>
+                            <p>Mon profil répond à 98% aux prérequis de votre annonce, tant sur les compétences techniques que sur la rigueur d'exécution opérationnelle. C'est avec enthousiasme que je vous propose d'échanger lors d'un entretien.</p>
+                            <p class="text-slate-400">Cordialement,<br><span class="text-white font-bold">Candidat JobCatch Pro</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3 : Auto-Apply Queue Simulation -->
+                    <div id="tab-content-queue" class="hidden mt-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                                <div class="text-purple-400 font-black text-lg">50 / jour</div>
+                                <div class="text-slate-400 text-[11px] mt-1" id="queue-desc-1">Candidatures envoyées sur pilote automatique</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                                <div class="text-emerald-400 font-black text-lg">3 Plateformes</div>
+                                <div class="text-slate-400 text-[11px] mt-1" id="queue-desc-2">LinkedIn, Indeed & Jobup.ch synchronisés</div>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
+                                <div class="text-yellow-400 font-black text-lg">x10 Entretiens</div>
+                                <div class="text-slate-400 text-[11px] mt-1" id="queue-desc-3">Taux de réponse moyen constaté sous 7 jours</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THE IRRESISTIBLE CONVERSION BOX (FOCUS CONVERSION ⚡) -->
+                <div class="mt-8 rounded-2xl bg-gradient-to-r from-purple-900/60 via-indigo-900/60 to-purple-900/60 border-2 border-purple-500/50 p-6 sm:p-8 text-center relative overflow-hidden shadow-2xl">
+                    <div class="max-w-2xl mx-auto">
+                        <span class="inline-block px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold text-[11px] uppercase tracking-wider mb-3">
+                            <i class="fa-solid fa-lock-open mr-1"></i><span id="cta-badge-offer">Offre Essai Pro : 3 Jours Gratuits</span>
+                        </span>
+                        
+                        <h3 class="text-2xl sm:text-3xl font-black text-white" id="cta-headline">
+                            Voulez-vous que l'IA postule pour vous avec ce niveau d'excellence ?
+                        </h3>
+                        
+                        <p class="text-slate-300 text-xs sm:text-sm mt-2 leading-relaxed" id="cta-subheadline">
+                            Ne laissez plus un robot d'entreprise éliminer votre candidature. Activez JobCatch AI pour adapter vos CV en 1 clic et postuler automatiquement à 50 offres par jour pendant que vous dormez.
+                        </p>
+
+                        <!-- Primary & Secondary Conversion Buttons -->
+                        <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                            <a href="/checkout" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm uppercase tracking-wide shadow-xl shadow-emerald-500/30 transition transform hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-bolt text-slate-950"></i>
+                                <span id="cta-primary-btn">Débloquer mes Entretiens — Essai 3 Jours ($0 Aujourd'hui) →</span>
+                            </a>
+                            <a href="/login?demo=true" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-sm transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-laptop-code text-purple-400"></i>
+                                <span id="cta-demo-btn">Tester la Démo Complète (Sans Carte)</span>
+                            </a>
+                        </div>
+
+                        <!-- Trust Guarantees -->
+                        <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-[11px] text-slate-300 font-medium">
+                            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i><span id="guarantee-1">0,00 $ débité aujourd'hui</span></span>
+                            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i><span id="guarantee-2">Accès Pro Illimité pendant 3 jours</span></span>
+                            <span><i class="fa-solid fa-check text-emerald-400 mr-1.5"></i><span id="guarantee-3">Annulation en 1 clic à tout moment</span></span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -149,4 +391,282 @@
         </div>
     </div>
 </div>
+
+<!-- ============================================================================== -->
+<!-- SCRIPT DU SIMULATEUR "CHOC" (INTERACTIF, ANIMÉ & HYPER-CONVERTISSANT)            -->
+<!-- ============================================================================== -->
+<script>
+    let currentSimLang = 'fr';
+
+    // Preset Profiles Data (EN & FR)
+    const profilePresets = {
+        swe: {
+            role_fr: "Software Engineer (Full Stack)",
+            role_en: "Software Engineer (Full Stack)",
+            before_fr: "Développé des fonctionnalités pour le site web en Python et corrigé les bugs de base de données.",
+            before_en: "Built website features using Python and fixed database bugs for client apps.",
+            after_fr: "• Conçu et déployé une architecture microservices FastAPI & React servant 25 000+ utilisateurs actifs ; réduit le temps de réponse SQL de 44% avec 99,9% de disponibilité.",
+            after_en: "• Architected asynchronous FastAPI & React microservices serving 25k+ DAU; optimized PostgreSQL indexing to slash query latency by 44% with 99.9% uptime."
+        },
+        data: {
+            role_fr: "Data Scientist / Machine Learning Engineer",
+            role_en: "Data Scientist / Machine Learning Engineer",
+            before_fr: "Nettoyé des bases de données et créé des modèles de prédiction avec Python et des dashboards.",
+            before_en: "Cleaned datasets, trained ML models with Python, and created basic Tableau dashboards.",
+            after_fr: "• Développé des pipelines de production PyTorch & LLM fine-tuning traitant 2M+ de requêtes/jour ; amélioré le débit d'inférence de 62% sur clusters GPU AWS.",
+            after_en: "• Engineered production PyTorch & LLM fine-tuning pipelines processing 2M+ records daily; boosted model inference throughput by 62% on AWS GPU clusters."
+        },
+        devops: {
+            role_fr: "DevOps & Cloud Infrastructure Architect",
+            role_en: "DevOps & Cloud Infrastructure Architect",
+            before_fr: "Géré des serveurs Linux, mis à jour des conteneurs Docker et surveillé les coûts cloud.",
+            before_en: "Configured Linux servers, updated Docker containers, and monitored cloud costs.",
+            after_fr: "• Orchestré des clusters Kubernetes multi-régions sur AWS avec Terraform IaC ; réduit les coûts d'infrastructure de 140 000 $/an tout en automatisant le déploiement CI/CD à zéro interruption.",
+            after_en: "• Orchestrated multi-region Kubernetes clusters on AWS with Terraform IaC; cut cloud infrastructure expenditures by $140k/yr while automating zero-downtime CI/CD."
+        },
+        swiss_corp: {
+            role_fr: "Financial Analyst / Banking Specialist (Suisse)",
+            role_en: "Financial Analyst / Banking Specialist (Switzerland)",
+            before_fr: "Fait des modèles Excel pour analyser les résultats financiers et préparé les rapports trimestriels.",
+            before_en: "Built Excel models, analyzed quarterly profit/loss statements, and drafted team reports.",
+            after_fr: "• Automatisé les modèles d'évaluation du risque sur des portefeuilles d'actifs de 120M+ CHF avec Python & Bloomberg API ; réduit le cycle de clôture mensuelle de 4 jours ouvrés.",
+            after_en: "• Automated financial risk valuation models across $120M+ asset portfolios using Python & Bloomberg API; reduced month-end closing cycle by 4 business days for executive steering committees."
+        }
+    };
+
+    function loadProfilePreset(key) {
+        const p = profilePresets[key];
+        if (!p) return;
+        document.getElementById('sim-role-input').value = currentSimLang === 'fr' ? p.role_fr : p.role_en;
+        document.getElementById('sim-bullet-input').value = currentSimLang === 'fr' ? p.before_fr : p.before_en;
+        document.getElementById('display-before-text').innerText = document.getElementById('sim-bullet-input').value;
+        document.getElementById('display-after-text').innerHTML = currentSimLang === 'fr' ? p.after_fr : p.after_en;
+        updateLetterRolePreview();
+    }
+
+    function resetDefaultBullet() {
+        loadProfilePreset('swe');
+    }
+
+    function updateLetterRolePreview() {
+        const role = document.getElementById('sim-role-input').value || "Spécialiste";
+        const companySelect = document.getElementById('sim-ats-select');
+        const companyText = companySelect.options[companySelect.selectedIndex].text.split('(')[0].trim();
+        
+        const previewRole = document.getElementById('letter-role-preview');
+        const previewComp = document.getElementById('letter-company-preview');
+        if (previewRole) previewRole.innerText = role;
+        if (previewComp) previewComp.innerText = companyText;
+    }
+
+    // THE 3-SECOND LIVE SIMULATION SEQUENCE ("LE CHOC" & "LE WAHOO")
+    function runShockSimulation() {
+        const btn = document.getElementById('btn-run-simulation');
+        const scannerBox = document.getElementById('sim-scanner-box');
+        const resultBox = document.getElementById('sim-result-box');
+        const stepText = document.getElementById('scanner-step-text');
+        const subText = document.getElementById('scanner-subtext');
+        const progressBar = document.getElementById('scanner-progress-bar');
+        
+        const inputRole = document.getElementById('sim-role-input').value.trim() || "Software Engineer";
+        const inputBullet = document.getElementById('sim-bullet-input').value.trim() || "Built web features in Python.";
+
+        // Disable button during simulation
+        btn.disabled = true;
+        btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+        // Show scanner box & hide results temporarily
+        scannerBox.classList.remove('hidden');
+        resultBox.classList.add('opacity-40');
+        scannerBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Phase 1 : 0.0s - 1.0s (Scanning ATS algorithms)
+        progressBar.style.width = '30%';
+        if (currentSimLang === 'fr') {
+            stepText.innerHTML = '<span class="text-yellow-400">Phase 1/3 :</span> Scan de votre CV par l\'algorithme d\'élimination ATS...';
+            subText.innerText = 'Comparaison avec 500+ critères d\'exclusion automatique (Workday, SAP, Taleo)...';
+        } else {
+            stepText.innerHTML = '<span class="text-yellow-400">Phase 1/3 :</span> Scanning your resume against corporate ATS filters...';
+            subText.innerText = 'Matching against 500+ automated exclusion filters (Workday, SAP, Greenhouse)...';
+        }
+
+        // Phase 2 : 1.0s - 2.0s (LE CHOC - ATS REJECTION DETECTED)
+        setTimeout(() => {
+            progressBar.style.width = '65%';
+            progressBar.classList.remove('from-rose-500');
+            progressBar.classList.add('from-rose-600', 'bg-rose-500');
+            if (currentSimLang === 'fr') {
+                stepText.innerHTML = '<span class="text-rose-400 font-black">⚠️ ALERTE CHOC :</span> Score ATS : 38% — Élimination automatique détectée !';
+                subText.innerText = 'Mots-clés manquants, absence de métriques de rentabilité. Rejet automatique avant lecture humaine.';
+            } else {
+                stepText.innerHTML = '<span class="text-rose-400 font-black">⚠️ SHOCK REJECTION :</span> ATS Score 38% — Automatically Discarded!';
+                subText.innerText = 'Missing target keywords, zero quantifiable ROI metrics. Filtered out before human review.';
+            }
+        }, 1100);
+
+        // Phase 3 : 2.0s - 3.0s (JobCatch AI Optimization Activated)
+        setTimeout(() => {
+            progressBar.style.width = '95%';
+            if (currentSimLang === 'fr') {
+                stepText.innerHTML = '<span class="text-emerald-400 font-black">✨ PROPULSION IA :</span> Injection des mots-clés & formule Google XYZ...';
+                subText.innerText = 'Optimisation sémantique et génération de la lettre de motivation sur-mesure...';
+            } else {
+                stepText.innerHTML = '<span class="text-emerald-400 font-black">✨ AI BOOST :</span> Injecting target keywords & Google XYZ formula...';
+                subText.innerText = 'Semantic restructuring and instant customized cover letter generation...';
+            }
+        }, 2100);
+
+        // Phase 4 : 3.0s (WAHOO EFFECT - REVEAL)
+        setTimeout(() => {
+            progressBar.style.width = '100%';
+            scannerBox.classList.add('hidden');
+            resultBox.classList.remove('opacity-40');
+
+            // Populate before & after text
+            document.getElementById('display-before-text').innerText = '"' + inputBullet + '"';
+            
+            // Generate tailored dynamic after text based on role
+            let enhancedText = "";
+            if (currentSimLang === 'fr') {
+                enhancedText = `• <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">Piloté et déployé l'architecture technique</span> pour ${inputRole} ; automatisé les processus critiques permettant d'<span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">augmenter la vélocité de 42%</span> et garanti 99,9% de conformité ATS d'entreprise.`;
+            } else {
+                enhancedText = `• <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">Architected and deployed scalable solutions</span> for ${inputRole}; automated critical workflows achieving <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">+42% velocity boost</span> with 99.9% uptime compliance.`;
+            }
+            document.getElementById('display-after-text').innerHTML = enhancedText;
+
+            updateLetterRolePreview();
+
+            // Re-enable button
+            btn.disabled = false;
+            btn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+            // Scroll result into view
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 3000);
+    }
+
+    // Switch Result Tabs (Bullet, Cover Letter, Queue)
+    function switchResultTab(tabKey) {
+        const bBtn = document.getElementById('tab-bullet-btn');
+        const lBtn = document.getElementById('tab-letter-btn');
+        const qBtn = document.getElementById('tab-queue-btn');
+
+        const bContent = document.getElementById('tab-content-bullet');
+        const lContent = document.getElementById('tab-content-letter');
+        const qContent = document.getElementById('tab-content-queue');
+
+        [bBtn, lBtn, qBtn].forEach(btn => {
+            btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white bg-slate-900 border border-slate-800 transition flex items-center space-x-1.5";
+        });
+
+        [bContent, lContent, qContent].forEach(c => c.classList.add('hidden'));
+
+        if (tabKey === 'bullet') {
+            bBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition flex items-center space-x-1.5";
+            bContent.classList.remove('hidden');
+        } else if (tabKey === 'letter') {
+            lBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition flex items-center space-x-1.5";
+            lContent.classList.remove('hidden');
+            updateLetterRolePreview();
+        } else if (tabKey === 'queue') {
+            qBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white transition flex items-center space-x-1.5";
+            qContent.classList.remove('hidden');
+        }
+    }
+
+    // Language Toggle Implementation (FR / EN)
+    function switchSimulatorLang(lang) {
+        currentSimLang = lang;
+        const frBtn = document.getElementById('lang-fr');
+        const enBtn = document.getElementById('lang-en');
+
+        if (lang === 'fr') {
+            frBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-purple-600 text-white shadow-sm";
+            enBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+
+            document.getElementById('badge-sim-title').innerText = "Simulateur ATS \"Choc\" en Direct ⚡";
+            document.getElementById('sim-heading').innerText = "Testez votre CV face aux algorithmes d'embauche";
+            document.getElementById('sim-subtitle').innerText = "Découvrez en 3 secondes pourquoi 80% des CV sont rejetés par Workday, SAP et Greenhouse avant qu'un humain ne les lise, et comment l'IA vous propulse dans le Top 1%.";
+            document.getElementById('label-target-role').innerText = "1. Votre Métier / Poste Visé :";
+            document.getElementById('label-quick-presets').innerText = "Ou choisissez un profil type :";
+            document.getElementById('label-target-company').innerText = "2. Entreprise / Algorithme ATS Cible :";
+            document.getElementById('label-bullet-input').innerText = "3. Votre ligne de CV actuelle (Ce qu'un candidat écrit) :";
+            document.getElementById('label-reset-btn').innerText = "Exemple par défaut";
+            document.getElementById('btn-run-text').innerText = "⚡ SIMULER LE SCAN ATS EN DIRECT (Test en 3s)";
+            document.getElementById('sim-disclaimer-1').innerText = "100% Gratuit & Immédiat";
+            document.getElementById('sim-disclaimer-2').innerText = "Aucune inscription requise";
+
+            document.getElementById('res-before-label').innerText = "Votre CV Standard (Non-Optimisé)";
+            document.getElementById('res-before-score').innerText = "Score ATS : 38% (Rejet Immédiat)";
+            document.getElementById('res-before-box-label').innerText = "Ce que l'algorithme lit :";
+            document.getElementById('res-before-verdict').innerText = "Résultat : Éliminé en moins de 10 secondes";
+            document.getElementById('res-before-detail').innerText = "Aucun recruteur humain ne verra jamais votre profil. L'ATS classe ce CV comme 'générique' par manque de mots-clés techniques ciblés et de métriques d'impact.";
+
+            document.getElementById('res-after-label').innerText = "CV Propulsé par JobCatch AI";
+            document.getElementById('res-after-score').innerText = "Score ATS : 98% (Entretien Garanti)";
+            document.getElementById('res-after-box-label').innerText = "Transformation Instantanée (Formule Google XYZ) :";
+            document.getElementById('res-after-verdict').innerText = "Résultat : Profil classé dans le Top 1% des Candidats";
+            document.getElementById('res-after-detail').innerText = "Mots-clés requis injectés à 100%, métriques d'impact chiffrées, validation automatique par Workday & SAP. Décrochage d'entretien garanti !";
+
+            document.getElementById('tab-bullet-text').innerText = "CV Optimisé";
+            document.getElementById('tab-letter-text').innerText = "Lettre de Motivation IA";
+            document.getElementById('tab-queue-text').innerText = "File Auto-Apply (50 offres/j)";
+            document.getElementById('tab-status-indicator').innerHTML = '<i class="fa-solid fa-circle-dot text-emerald-400 mr-1.5 animate-pulse"></i>Prêt à postuler en 1 clic';
+
+            document.getElementById('cta-badge-offer').innerText = "Offre Essai Pro : 3 Jours Gratuits";
+            document.getElementById('cta-headline').innerText = "Voulez-vous que l'IA postule pour vous avec ce niveau d'excellence ?";
+            document.getElementById('cta-subheadline').innerText = "Ne laissez plus un robot d'entreprise éliminer votre candidature. Activez JobCatch AI pour adapter vos CV en 1 clic et postuler automatiquement à 50 offres par jour pendant que vous dormez.";
+            document.getElementById('cta-primary-btn').innerText = "Débloquer mes Entretiens — Essai 3 Jours ($0 Aujourd'hui) →";
+            document.getElementById('cta-demo-btn').innerText = "Tester la Démo Complète (Sans Carte)";
+            document.getElementById('guarantee-1').innerText = "0,00 $ débité aujourd'hui";
+            document.getElementById('guarantee-2').innerText = "Accès Pro Illimité pendant 3 jours";
+            document.getElementById('guarantee-3').innerText = "Annulation en 1 clic à tout moment";
+        } else {
+            enBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition bg-purple-600 text-white shadow-sm";
+            frBtn.className = "px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition";
+
+            document.getElementById('badge-sim-title').innerText = "Live Shock ATS Simulator ⚡";
+            document.getElementById('sim-heading').innerText = "Test your resume against corporate hiring algorithms";
+            document.getElementById('sim-subtitle').innerText = "See in 3 seconds why 80% of resumes get rejected by Workday, SAP, and Greenhouse before any human reads them, and how AI launches you into the Top 1%.";
+            document.getElementById('label-target-role').innerText = "1. Your Target Role / Job Title:";
+            document.getElementById('label-quick-presets').innerText = "Or pick a sample profile:";
+            document.getElementById('label-target-company').innerText = "2. Target Company / ATS Engine:";
+            document.getElementById('label-bullet-input').innerText = "3. Your Current Resume Bullet (What you wrote):";
+            document.getElementById('label-reset-btn').innerText = "Default Example";
+            document.getElementById('btn-run-text').innerText = "⚡ RUN LIVE ATS SIMULATION (3-Second Test)";
+            document.getElementById('sim-disclaimer-1').innerText = "100% Free & Instant";
+            document.getElementById('sim-disclaimer-2').innerText = "No Signup or Card Required";
+
+            document.getElementById('res-before-label').innerText = "Standard Resume (Unoptimized)";
+            document.getElementById('res-before-score').innerText = "ATS Score: 38% (Instant Rejection)";
+            document.getElementById('res-before-box-label').innerText = "What the Algorithm Reads:";
+            document.getElementById('res-before-verdict').innerText = "Verdict: Discarded in under 10 seconds";
+            document.getElementById('res-before-detail').innerText = "No human recruiter will ever see this application. The corporate ATS flags it as generic due to missing target keywords and zero impact ROI metrics.";
+
+            document.getElementById('res-after-label').innerText = "JobCatch AI Powered Resume";
+            document.getElementById('res-after-score').innerText = "ATS Score: 98% (Interview Guaranteed)";
+            document.getElementById('res-after-box-label').innerText = "Instant AI Transformation (Google XYZ Formula):";
+            document.getElementById('res-after-verdict').innerText = "Verdict: Ranked in Top 1% of Applicants";
+            document.getElementById('res-after-detail').innerText = "100% keyword match, quantified ROI metrics, instant compliance with Workday & SAP algorithms. Callbacks guaranteed in 24-48 hours!";
+
+            document.getElementById('tab-bullet-text').innerText = "Optimized Resume";
+            document.getElementById('tab-letter-text').innerText = "AI Cover Letter";
+            document.getElementById('tab-queue-text').innerText = "Auto-Apply Queue (50 jobs/day)";
+            document.getElementById('tab-status-indicator').innerHTML = '<i class="fa-solid fa-circle-dot text-emerald-400 mr-1.5 animate-pulse"></i>Ready to apply in 1 click';
+
+            document.getElementById('cta-badge-offer').innerText = "Pro Trial Offer: 3-Day Free Trial";
+            document.getElementById('cta-headline').innerText = "Do you want AI to apply for you with this level of excellence?";
+            document.getElementById('cta-subheadline').innerText = "Stop letting corporate bots reject your hard work. Activate JobCatch AI to tailor applications in 1 click and auto-apply to 50 jobs a day while you sleep.";
+            document.getElementById('cta-primary-btn').innerText = "Unlock My Interviews — 3-Day Free Trial ($0 Today) →";
+            document.getElementById('cta-demo-btn').innerText = "Try Full Live Demo (No Card Needed)";
+            document.getElementById('guarantee-1').innerText = "$0.00 charged today";
+            document.getElementById('guarantee-2').innerText = "Full Pro Access for 3 Days";
+            document.getElementById('guarantee-3').innerText = "1-Click Cancellation Anytime";
+        }
+    }
+
+    // Auto-update preview on select change
+    document.getElementById('sim-ats-select').addEventListener('change', updateLetterRolePreview);
+    document.getElementById('sim-role-input').addEventListener('input', updateLetterRolePreview);
+</script>
 {% endblock %}
