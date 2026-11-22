@@ -96,17 +96,17 @@
                     <!-- Quick Preset Chips -->
                     <div>
                         <span class="text-[11px] font-semibold text-slate-400 block mb-1.5" id="label-quick-presets">Ou choisissez un profil type :</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button onclick="loadProfilePreset('swe')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-purple-500/30 bg-purple-500/10 text-purple-300 hover:bg-purple-500/20 transition">
+                        <div class="flex flex-wrap gap-1.5" id="preset-chips-container">
+                            <button id="preset-btn-swe" onclick="loadProfilePreset('swe')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-purple-500/40 bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 transition">
                                 💻 Dev Full Stack
                             </button>
-                            <button onclick="loadProfilePreset('data')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                            <button id="preset-btn-data" onclick="loadProfilePreset('data')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
                                 🧠 Data / IA
                             </button>
-                            <button onclick="loadProfilePreset('devops')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                            <button id="preset-btn-devops" onclick="loadProfilePreset('devops')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
                                 ☁️ Cloud / DevOps
                             </button>
-                            <button onclick="loadProfilePreset('swiss_corp')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
+                            <button id="preset-btn-swiss_corp" onclick="loadProfilePreset('swiss_corp')" class="preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition">
                                 🇨🇭 Swiss Banking / Finance
                             </button>
                         </div>
@@ -137,7 +137,7 @@
                                 <i class="fa-solid fa-rotate-left mr-1"></i><span id="label-reset-btn">Exemple par défaut</span>
                             </button>
                         </div>
-                        <textarea id="sim-bullet-input" rows="4" class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl p-3 text-xs text-slate-200 font-mono transition leading-relaxed" placeholder="Collez une puce ou phrase de votre CV ici...">Built web features using Python and fixed database bugs for team applications.</textarea>
+                        <textarea id="sim-bullet-input" rows="4" class="w-full bg-slate-950/80 border border-slate-700/80 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-xl p-3 text-xs text-slate-200 font-mono transition leading-relaxed" placeholder="Collez une puce ou phrase de votre CV ici...">Développé des fonctionnalités pour le site web en Python et corrigé les bugs de base de données.</textarea>
                     </div>
 
                     <!-- The Choc Trigger Button -->
@@ -198,7 +198,7 @@
                         <div class="mt-4">
                             <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="res-before-box-label">Ce que l'algorithme lit :</div>
                             <div id="display-before-text" class="text-xs text-slate-300 font-mono bg-slate-950/70 p-3.5 rounded-xl border border-rose-500/20 leading-relaxed">
-                                "Built web features using Python and fixed database bugs for team applications."
+                                "Développé des fonctionnalités pour le site web en Python et corrigé les bugs de base de données."
                             </div>
                         </div>
 
@@ -230,7 +230,7 @@
                         <div class="mt-4">
                             <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1" id="res-after-box-label">Transformation Instantanée (Formule Google XYZ) :</div>
                             <div id="display-after-text" class="text-xs text-emerald-200 font-mono bg-slate-950/70 p-3.5 rounded-xl border border-emerald-500/30 leading-relaxed">
-                                • <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">Architected asynchronous FastAPI & React microservices</span> serving 25k+ DAU; optimized PostgreSQL indexing to slash query latency by <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">44%</span> with 99.9% uptime.
+                                • <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">Conçu et déployé une architecture microservices FastAPI & React</span> servant 25 000+ utilisateurs actifs ; réduit le temps de réponse SQL de <span class="bg-emerald-500/20 text-emerald-200 font-bold px-1 rounded">44%</span> avec 99,9% de disponibilité.
                             </div>
                         </div>
 
@@ -437,9 +437,19 @@
     function loadProfilePreset(key) {
         const p = profilePresets[key];
         if (!p) return;
+        
+        // Update active pill button style
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.className = "preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-slate-800 bg-slate-950/60 text-slate-300 hover:bg-slate-800 transition";
+        });
+        const activeBtn = document.getElementById(`preset-btn-${key}`);
+        if (activeBtn) {
+            activeBtn.className = "preset-btn px-2.5 py-1 rounded-lg text-[11px] font-bold border border-purple-500/40 bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 transition shadow-sm";
+        }
+
         document.getElementById('sim-role-input').value = currentSimLang === 'fr' ? p.role_fr : p.role_en;
         document.getElementById('sim-bullet-input').value = currentSimLang === 'fr' ? p.before_fr : p.before_en;
-        document.getElementById('display-before-text').innerText = document.getElementById('sim-bullet-input').value;
+        document.getElementById('display-before-text').innerText = '"' + document.getElementById('sim-bullet-input').value + '"';
         document.getElementById('display-after-text').innerHTML = currentSimLang === 'fr' ? p.after_fr : p.after_en;
         updateLetterRolePreview();
     }
@@ -618,6 +628,10 @@
             document.getElementById('cta-subheadline').innerText = "Ne laissez plus un robot d'entreprise éliminer votre candidature. Activez JobCatch AI pour adapter vos CV en 1 clic et postuler automatiquement à 50 offres par jour pendant que vous dormez.";
             document.getElementById('cta-primary-btn').innerText = "Débloquer mes Entretiens — Essai 3 Jours ($0 Aujourd'hui) →";
             document.getElementById('cta-demo-btn').innerText = "Tester la Démo Complète (Sans Carte)";
+            document.getElementById('sim-bullet-input').placeholder = "Collez une puce ou phrase de votre CV ici...";
+            document.getElementById('queue-desc-1').innerText = "Candidatures envoyées sur pilote automatique";
+            document.getElementById('queue-desc-2').innerText = "LinkedIn, Indeed & Jobup.ch synchronisés";
+            document.getElementById('queue-desc-3').innerText = "Taux de réponse moyen constaté sous 7 jours";
             document.getElementById('guarantee-1').innerText = "0,00 $ débité aujourd'hui";
             document.getElementById('guarantee-2').innerText = "Accès Pro Illimité pendant 3 jours";
             document.getElementById('guarantee-3').innerText = "Annulation en 1 clic à tout moment";
@@ -659,6 +673,10 @@
             document.getElementById('cta-subheadline').innerText = "Stop letting corporate bots reject your hard work. Activate JobCatch AI to tailor applications in 1 click and auto-apply to 50 jobs a day while you sleep.";
             document.getElementById('cta-primary-btn').innerText = "Unlock My Interviews — 3-Day Free Trial ($0 Today) →";
             document.getElementById('cta-demo-btn').innerText = "Try Full Live Demo (No Card Needed)";
+            document.getElementById('sim-bullet-input').placeholder = "Paste a bullet point or phrase from your resume here...";
+            document.getElementById('queue-desc-1').innerText = "Tailored applications submitted on autopilot";
+            document.getElementById('queue-desc-2').innerText = "LinkedIn, Indeed & Jobup.ch synced";
+            document.getElementById('queue-desc-3').innerText = "Average interview callback rate in 7 days";
             document.getElementById('guarantee-1').innerText = "$0.00 charged today";
             document.getElementById('guarantee-2').innerText = "Full Pro Access for 3 Days";
             document.getElementById('guarantee-3').innerText = "1-Click Cancellation Anytime";
