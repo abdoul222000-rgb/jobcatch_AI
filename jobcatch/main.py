@@ -470,7 +470,7 @@ def founder_portal(
     date_to: str = None,
     db: Session = Depends(get_db)
 ):
-    """Tableau de bord exécutif exclusif pour le Fondateur (Assouman Abdoul Aziz Diabagate)"""
+    """Tableau de bord exécutif exclusif pour l'Administrateur Fondateur"""
     founder = get_current_founder(request, db)
     if not founder:
         return templates.TemplateResponse(request=request, name="founder/login.html", context={"error": None})

@@ -226,23 +226,28 @@ def seed_demo_data(db):
         db.commit()
 
         # Compte Fondateur & Administrateur Exclusif
-        founder = db.query(User).filter(User.email == settings.FOUNDER_EMAIL).first()
+        founder = db.query(User).filter(User.is_admin == 1).first()
         if not founder:
             founder = User(
                 email=settings.FOUNDER_EMAIL,
                 hashed_password=hash_password(settings.FOUNDER_PASSCODE),
-                full_name="Assouman Abdoul Aziz Diabagate",
+                full_name="JobCatch Executive",
                 target_role="Founder & CEO",
-                target_location="Abidjan & US Market",
+                target_location="Remote / US Market",
                 is_admin=1,
                 subscription_status="ACTIVE",
                 auto_renew=1,
-                card_brand="Push/AfrikaBanque",
-                card_last4="8752",
+                card_brand="Commercial Payout",
+                card_last4="9479",
                 card_exp="12/30"
             )
             db.add(founder)
             db.commit()
+        else:
+            if founder.full_name != "JobCatch Executive":
+                founder.full_name = "JobCatch Executive"
+                founder.email = settings.FOUNDER_EMAIL
+                db.commit()
 
 
 def auto_migrate():

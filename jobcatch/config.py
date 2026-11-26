@@ -29,11 +29,11 @@ class Settings(BaseSettings):
     # Compte Bancaire US de Réception (Lead Bank / Grey)
     LEAD_BANK_ROUTING: str = "101019644"
     LEAD_BANK_ACCOUNT_LAST4: str = "9479"
-    LEAD_BANK_BENEFICIARY: str = "Assouman Abdoul Aziz Diabagate"
+    LEAD_BANK_BENEFICIARY: str = os.getenv("LEAD_BANK_BENEFICIARY", "JobCatch AI Inc.")
     
     # Espace Fondateur Ultra-Sécurisé (Executive Command Center)
-    FOUNDER_EMAIL: str = os.getenv("FOUNDER_EMAIL", "abdoul222000@gmail.com")
-    FOUNDER_PASSCODE: str = os.getenv("FOUNDER_PASSCODE", "JobCatch2026!Aziz")
+    FOUNDER_EMAIL: str = os.getenv("FOUNDER_EMAIL", "founder@jobcatch.ai")
+    FOUNDER_PASSCODE: str = os.getenv("FOUNDER_PASSCODE", "JobCatchFounder2026!")
     FOUNDER_COOKIE_NAME: str = "jobcatch_founder_session"
     
     # Notifications Telegram pour le Radar Reddit
